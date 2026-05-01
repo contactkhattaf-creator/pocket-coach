@@ -15,7 +15,7 @@ export function PhoneDashboard({ className = "" }: { className?: string }) {
       const p = Math.min(1, (t - start) / dur);
       const eased = 1 - Math.pow(1 - p, 3);
       const v = (target * eased).toFixed(2);
-      el.textContent = `$${Number(v).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      el.textContent = `${Number(v).toLocaleString(undefined, { minimumFractionDigits: 2 })} MAD`;
       if (p < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -35,7 +35,7 @@ export function PhoneDashboard({ className = "" }: { className?: string }) {
             <div>
               <p className="text-[10px] uppercase tracking-[0.18em] text-white/50">Balance</p>
               <p className="mt-1 font-display text-3xl font-bold text-white">
-                <span ref={balanceRef}>$0.00</span>
+                <span ref={balanceRef}>0.00 MAD</span>
               </p>
               <p className="mt-1 text-xs text-mint">▲ 12.4% this month</p>
             </div>
@@ -76,14 +76,14 @@ export function PhoneDashboard({ className = "" }: { className?: string }) {
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-2xl bg-white/5 p-3 ring-1 ring-white/5">
               <p className="text-[10px] uppercase tracking-wider text-white/50">Top category</p>
-              <p className="mt-1 text-sm font-semibold text-white">Coffee · $84</p>
+              <p className="mt-1 text-sm font-semibold text-white">Coffee · 84 MAD</p>
               <div className="mt-2 h-1.5 rounded-full bg-white/10">
                 <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-fuchsia-400 to-violet-bright" />
               </div>
             </div>
             <div className="rounded-2xl bg-white/5 p-3 ring-1 ring-white/5">
               <p className="text-[10px] uppercase tracking-wider text-white/50">Saved</p>
-              <p className="mt-1 text-sm font-semibold text-mint">+$214</p>
+              <p className="mt-1 text-sm font-semibold text-mint">+214 MAD</p>
               <div className="mt-2 h-1.5 rounded-full bg-white/10">
                 <div className="h-full w-1/2 rounded-full bg-mint" />
               </div>
