@@ -151,6 +151,48 @@ export type Database = {
         }
         Relationships: []
       }
+      challenges: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_days: number
+          id: string
+          is_active: boolean
+          name: string
+          progress: Json | null
+          reward_badge: string | null
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_days?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          progress?: Json | null
+          reward_badge?: string | null
+          start_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_days?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          progress?: Json | null
+          reward_badge?: string | null
+          start_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       goals: {
         Row: {
           color: string | null
@@ -229,13 +271,58 @@ export type Database = {
         }
         Relationships: []
       }
+      micro_objectives: {
+        Row: {
+          category: string | null
+          created_at: string
+          current_value: number | null
+          description: string | null
+          due_date: string | null
+          id: string
+          is_completed: boolean
+          target_value: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          current_value?: number | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_completed?: boolean
+          target_value?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          current_value?: number | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_completed?: boolean
+          target_value?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           age: number | null
           avatar_url: string | null
+          badges: string[] | null
           bio: string | null
           created_at: string
           currency: string
+          fds_score: number | null
+          financial_profile_type: string | null
           full_name: string | null
           id: string
           phone: string | null
@@ -247,9 +334,12 @@ export type Database = {
         Insert: {
           age?: number | null
           avatar_url?: string | null
+          badges?: string[] | null
           bio?: string | null
           created_at?: string
           currency?: string
+          fds_score?: number | null
+          financial_profile_type?: string | null
           full_name?: string | null
           id: string
           phone?: string | null
@@ -261,9 +351,12 @@ export type Database = {
         Update: {
           age?: number | null
           avatar_url?: string | null
+          badges?: string[] | null
           bio?: string | null
           created_at?: string
           currency?: string
+          fds_score?: number | null
+          financial_profile_type?: string | null
           full_name?: string | null
           id?: string
           phone?: string | null

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDashboard } from "@/routes/dashboard";
-import { TrendingUp, TrendingDown, Target, Flame, ArrowRight, CreditCard, Zap } from "lucide-react";
+import { TrendingUp, TrendingDown, Target, Flame, ArrowRight, CreditCard, Zap, Brain, Shield } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { AnimateIn, AnimatedCounter } from "@/hooks/use-animate-on-scroll";
 
@@ -60,7 +60,7 @@ function DashboardOverview() {
       <AnimateIn delay={0}>
         <div className="mb-8">
           <h1 className="font-display text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Welcome back{profile?.full_name ? `, ${profile.full_name}` : ""}</p>
+          <p className="mt-1 text-sm text-muted-foreground">Welcome back{profile?.full_name ? `, ${String(profile.full_name)}` : ""}</p>
         </div>
       </AnimateIn>
 
@@ -95,13 +95,33 @@ function DashboardOverview() {
         </div>
       </AnimateIn>
 
-      {/* Quick Stats */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Financial Profile Banner */}
+      {profile?.financial_profile_type ? (
+        <AnimateIn delay={120}>
+          <a href="/dashboard/profile" className="mb-6 flex items-center gap-4 rounded-2xl bg-card p-4 ring-1 ring-border transition-all hover:ring-violet-bright/30 hover:-translate-y-0.5">
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-violet-bright/15">
+              <Shield className="h-6 w-6 text-violet-bright" />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs text-muted-foreground">Your Financial Profile</p>
+              <p className="text-sm font-bold text-foreground capitalize">{String(profile.financial_profile_type).replace(/_/g, " ")}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground">FDS</p>
+              <p className="font-display text-xl font-bold text-violet-bright">{String(profile.fds_score || 0)}</p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+          </a>
+        </AnimateIn>
+      ) : null}
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {[
           { icon: TrendingUp, label: "Total Saved", value: savedTotal, suffix: " MAD", color: "text-success", bg: "from-emerald-500/10 to-transparent" },
           { icon: Target, label: "Active Goals", value: goals.length, suffix: "", color: "text-violet-bright", bg: "from-violet-500/10 to-transparent" },
           { icon: Flame, label: "Streak", value: currentStreak, suffix: " days", color: "text-warning", bg: "from-amber-500/10 to-transparent" },
           { icon: CreditCard, label: "Upcoming Bills", value: bills.length, suffix: "", color: "text-magenta", bg: "from-pink-500/10 to-transparent" },
+          { icon: Brain, label: "FDS Score", value: Number(profile?.fds_score || 0), suffix: "/100", color: "text-violet-bright", bg: "from-violet-500/10 to-transparent" },
         ].map((stat, i) => (
           <AnimateIn key={stat.label} delay={160 + i * 80} direction={i % 2 === 0 ? "up" : "scale"}>
             <div className={`group rounded-2xl bg-gradient-to-br ${stat.bg} bg-card p-5 ring-1 ring-border transition-all duration-300 hover:ring-violet-bright/30 hover:-translate-y-1 hover:shadow-card`}>

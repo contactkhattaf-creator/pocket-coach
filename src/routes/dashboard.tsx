@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, createContext, useContext, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
-import { MoniqLogo } from "@/components/MoniqLogo";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 interface DashboardContextType {
   user: { id: string; email?: string } | null;
@@ -40,14 +40,7 @@ function DashboardLayout() {
   }, [navigate]);
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-center">
-          <MoniqLogo size={48} className="mx-auto text-violet-bright animate-pulse" />
-          <p className="mt-4 text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (
