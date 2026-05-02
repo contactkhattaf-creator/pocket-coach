@@ -163,7 +163,7 @@ function Index() {
                    width={1024} height={1280} loading="lazy" />
               <div className="absolute -bottom-5 -left-5 rotate-[-6deg] rounded-2xl bg-white px-4 py-3 shadow-card">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-black/50">Streak</p>
-                <p className="font-display text-xl font-bold text-black">14 days 🔥</p>
+                <p className="font-display text-xl font-bold text-black">14 days</p>
               </div>
             </div>
           </div>
