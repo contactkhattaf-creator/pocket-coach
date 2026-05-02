@@ -103,7 +103,7 @@ function DashboardOverview() {
                 <YAxis tick={{ fill: "oklch(0.60 0.03 280)", fontSize: 12 }} axisLine={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{ background: "oklch(0.18 0.025 280)", border: "1px solid oklch(0.28 0.03 280)", borderRadius: "12px", color: "oklch(0.95 0.01 280)" }}
-                  formatter={(value: number) => [`${value.toLocaleString("fr-MA")} MAD`]}
+                  formatter={(value: unknown) => [`${Number(value).toLocaleString("fr-MA")} MAD`]}
                 />
                 <Bar dataKey="income" fill="oklch(0.72 0.19 155)" radius={[6, 6, 0, 0]} />
                 <Bar dataKey="expense" fill="oklch(0.58 0.22 295)" radius={[6, 6, 0, 0]} />
