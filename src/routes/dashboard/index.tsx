@@ -96,7 +96,7 @@ function DashboardOverview() {
       </AnimateIn>
 
       {/* Financial Profile Banner */}
-      {profile?.financial_profile_type && (
+      {profile?.financial_profile_type ? (
         <AnimateIn delay={120}>
           <a href="/dashboard/profile" className="mb-6 flex items-center gap-4 rounded-2xl bg-card p-4 ring-1 ring-border transition-all hover:ring-violet-bright/30 hover:-translate-y-0.5">
             <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-violet-bright/15">
@@ -113,7 +113,7 @@ function DashboardOverview() {
             <ArrowRight className="h-4 w-4 text-muted-foreground" />
           </a>
         </AnimateIn>
-      )}
+      ) : null}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {[
