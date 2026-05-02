@@ -2,7 +2,26 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDashboard } from "@/routes/dashboard";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Trash2, Target, Plane, Laptop, Home, Car, BookOpen, Gem, Palmtree, GraduationCap, Banknote, PartyPopper } from "lucide-react";
+
+const goalIcons = [
+  { key: "target", icon: Target, label: "Target" },
+  { key: "travel", icon: Plane, label: "Travel" },
+  { key: "tech", icon: Laptop, label: "Tech" },
+  { key: "home", icon: Home, label: "Home" },
+  { key: "car", icon: Car, label: "Car" },
+  { key: "education", icon: BookOpen, label: "Education" },
+  { key: "luxury", icon: Gem, label: "Luxury" },
+  { key: "vacation", icon: Palmtree, label: "Vacation" },
+  { key: "graduation", icon: GraduationCap, label: "Graduation" },
+  { key: "savings", icon: Banknote, label: "Savings" },
+];
+
+function getGoalIcon(iconKey: string) {
+  const found = goalIcons.find((g) => g.key === iconKey);
+  const Icon = found?.icon || Target;
+  return <Icon className="h-6 w-6 text-violet-bright" />;
+}
 
 export const Route = createFileRoute("/dashboard/goals")({
   component: GoalsPage,
@@ -12,7 +31,7 @@ function GoalsPage() {
   const { user } = useDashboard();
   const [goals, setGoals] = useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", target_amount: "", current_amount: "0", deadline: "", icon: "🎯" });
+  const [form, setForm] = useState({ name: "", target_amount: "", current_amount: "0", deadline: "", icon: "target" });
   const [saving, setSaving] = useState(false);
   const [celebrated, setCelebrated] = useState<string | null>(null);
 
@@ -33,7 +52,7 @@ function GoalsPage() {
     });
     setSaving(false);
     setModalOpen(false);
-    setForm({ name: "", target_amount: "", current_amount: "0", deadline: "", icon: "🎯" });
+    setForm({ name: "", target_amount: "", current_amount: "0", deadline: "", icon: "target" });
     loadData();
   }
 
@@ -52,8 +71,6 @@ function GoalsPage() {
     loadData();
   }
 
-  const icons = ["🎯", "✈️", "💻", "🏠", "🚗", "📚", "💍", "🏖️", "🎓", "💰"];
-
   return (
     <div>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -69,15 +86,17 @@ function GoalsPage() {
           const pct = Number(goal.target_amount) > 0 ? Math.min(100, (Number(goal.current_amount) / Number(goal.target_amount)) * 100) : 0;
           const isComplete = pct >= 100;
           return (
-            <div key={goal.id} className={`relative rounded-2xl bg-card p-5 ring-1 ring-border transition ${celebrated === goal.id ? "glow-pulse" : ""}`}>
+            <div key={goal.id} className={`relative rounded-2xl bg-card p-5 ring-1 ring-border transition-all duration-300 hover:-translate-y-1 hover:ring-violet-bright/30 ${celebrated === goal.id ? "glow-pulse" : ""}`}>
               {celebrated === goal.id && (
                 <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-violet-bright/20 backdrop-blur-sm">
-                  <span className="text-4xl">🎉</span>
+                  <PartyPopper className="h-10 w-10 text-violet-bright" />
                 </div>
               )}
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-2xl">{goal.icon}</span>
-                <button onClick={() => handleDelete(goal.id)} className="rounded-lg p-1 text-muted-foreground hover:text-destructive"><Trash2Small /></button>
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-violet-bright/10">
+                  {getGoalIcon(goal.icon || "target")}
+                </div>
+                <button onClick={() => handleDelete(goal.id)} className="rounded-lg p-1 text-muted-foreground hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
               </div>
               {/* SVG circular progress */}
               <div className="mx-auto mb-4 relative h-28 w-28">
@@ -113,7 +132,7 @@ function GoalsPage() {
         })}
         {goals.length === 0 && (
           <div className="col-span-full py-16 text-center">
-            <span className="text-4xl">🎯</span>
+            <Target className="mx-auto h-12 w-12 text-violet-bright/40" />
             <p className="mt-4 text-sm text-muted-foreground">No goals yet. Create your first savings goal!</p>
           </div>
         )}
@@ -130,8 +149,10 @@ function GoalsPage() {
               <div>
                 <label className="mb-1 block text-xs font-medium text-muted-foreground">Icon</label>
                 <div className="flex flex-wrap gap-2">
-                  {icons.map((ic) => (
-                    <button key={ic} type="button" onClick={() => setForm({ ...form, icon: ic })} className={`rounded-lg p-2 text-xl transition ${form.icon === ic ? "bg-violet-bright/20 ring-2 ring-violet-bright" : "bg-surface hover:bg-surface-hover"}`}>{ic}</button>
+                  {goalIcons.map((gi) => (
+                    <button key={gi.key} type="button" onClick={() => setForm({ ...form, icon: gi.key })} className={`rounded-lg p-2 transition ${form.icon === gi.key ? "bg-violet-bright/20 ring-2 ring-violet-bright" : "bg-surface hover:bg-surface-hover"}`}>
+                      <gi.icon className="h-5 w-5 text-violet-bright" />
+                    </button>
                   ))}
                 </div>
               </div>
@@ -153,11 +174,5 @@ function GoalsPage() {
         </div>
       )}
     </div>
-  );
-}
-
-function Trash2Small() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
   );
 }
