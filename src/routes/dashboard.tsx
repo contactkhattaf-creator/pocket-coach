@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, createContext, useContext, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
-import { MoniqLogo } from "@/components/MoniqLogo";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 interface DashboardContextType {
   user: { id: string; email?: string } | null;
