@@ -18,9 +18,12 @@ import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/tr
 import { Route as DashboardSubscriptionsRouteImport } from './routes/dashboard/subscriptions'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
 import { Route as DashboardScannerRouteImport } from './routes/dashboard/scanner'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
+import { Route as DashboardMicroObjectivesRouteImport } from './routes/dashboard/micro-objectives'
 import { Route as DashboardInvestmentsRouteImport } from './routes/dashboard/investments'
 import { Route as DashboardGoalsRouteImport } from './routes/dashboard/goals'
 import { Route as DashboardExportRouteImport } from './routes/dashboard/export'
+import { Route as DashboardChallengesRouteImport } from './routes/dashboard/challenges'
 import { Route as DashboardBudgetRouteImport } from './routes/dashboard/budget'
 import { Route as DashboardBillsRouteImport } from './routes/dashboard/bills'
 import { Route as DashboardAssistantRouteImport } from './routes/dashboard/assistant'
@@ -70,6 +73,17 @@ const DashboardScannerRoute = DashboardScannerRouteImport.update({
   path: '/scanner',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardMicroObjectivesRoute =
+  DashboardMicroObjectivesRouteImport.update({
+    id: '/micro-objectives',
+    path: '/micro-objectives',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardInvestmentsRoute = DashboardInvestmentsRouteImport.update({
   id: '/investments',
   path: '/investments',
@@ -83,6 +97,11 @@ const DashboardGoalsRoute = DashboardGoalsRouteImport.update({
 const DashboardExportRoute = DashboardExportRouteImport.update({
   id: '/export',
   path: '/export',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardChallengesRoute = DashboardChallengesRouteImport.update({
+  id: '/challenges',
+  path: '/challenges',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardBudgetRoute = DashboardBudgetRouteImport.update({
@@ -109,9 +128,12 @@ export interface FileRoutesByFullPath {
   '/dashboard/assistant': typeof DashboardAssistantRoute
   '/dashboard/bills': typeof DashboardBillsRoute
   '/dashboard/budget': typeof DashboardBudgetRoute
+  '/dashboard/challenges': typeof DashboardChallengesRoute
   '/dashboard/export': typeof DashboardExportRoute
   '/dashboard/goals': typeof DashboardGoalsRoute
   '/dashboard/investments': typeof DashboardInvestmentsRoute
+  '/dashboard/micro-objectives': typeof DashboardMicroObjectivesRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/scanner': typeof DashboardScannerRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
@@ -125,9 +147,12 @@ export interface FileRoutesByTo {
   '/dashboard/assistant': typeof DashboardAssistantRoute
   '/dashboard/bills': typeof DashboardBillsRoute
   '/dashboard/budget': typeof DashboardBudgetRoute
+  '/dashboard/challenges': typeof DashboardChallengesRoute
   '/dashboard/export': typeof DashboardExportRoute
   '/dashboard/goals': typeof DashboardGoalsRoute
   '/dashboard/investments': typeof DashboardInvestmentsRoute
+  '/dashboard/micro-objectives': typeof DashboardMicroObjectivesRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/scanner': typeof DashboardScannerRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
@@ -143,9 +168,12 @@ export interface FileRoutesById {
   '/dashboard/assistant': typeof DashboardAssistantRoute
   '/dashboard/bills': typeof DashboardBillsRoute
   '/dashboard/budget': typeof DashboardBudgetRoute
+  '/dashboard/challenges': typeof DashboardChallengesRoute
   '/dashboard/export': typeof DashboardExportRoute
   '/dashboard/goals': typeof DashboardGoalsRoute
   '/dashboard/investments': typeof DashboardInvestmentsRoute
+  '/dashboard/micro-objectives': typeof DashboardMicroObjectivesRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/scanner': typeof DashboardScannerRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
@@ -162,9 +190,12 @@ export interface FileRouteTypes {
     | '/dashboard/assistant'
     | '/dashboard/bills'
     | '/dashboard/budget'
+    | '/dashboard/challenges'
     | '/dashboard/export'
     | '/dashboard/goals'
     | '/dashboard/investments'
+    | '/dashboard/micro-objectives'
+    | '/dashboard/profile'
     | '/dashboard/scanner'
     | '/dashboard/settings'
     | '/dashboard/subscriptions'
@@ -178,9 +209,12 @@ export interface FileRouteTypes {
     | '/dashboard/assistant'
     | '/dashboard/bills'
     | '/dashboard/budget'
+    | '/dashboard/challenges'
     | '/dashboard/export'
     | '/dashboard/goals'
     | '/dashboard/investments'
+    | '/dashboard/micro-objectives'
+    | '/dashboard/profile'
     | '/dashboard/scanner'
     | '/dashboard/settings'
     | '/dashboard/subscriptions'
@@ -195,9 +229,12 @@ export interface FileRouteTypes {
     | '/dashboard/assistant'
     | '/dashboard/bills'
     | '/dashboard/budget'
+    | '/dashboard/challenges'
     | '/dashboard/export'
     | '/dashboard/goals'
     | '/dashboard/investments'
+    | '/dashboard/micro-objectives'
+    | '/dashboard/profile'
     | '/dashboard/scanner'
     | '/dashboard/settings'
     | '/dashboard/subscriptions'
@@ -277,6 +314,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardScannerRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/micro-objectives': {
+      id: '/dashboard/micro-objectives'
+      path: '/micro-objectives'
+      fullPath: '/dashboard/micro-objectives'
+      preLoaderRoute: typeof DashboardMicroObjectivesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/investments': {
       id: '/dashboard/investments'
       path: '/investments'
@@ -296,6 +347,13 @@ declare module '@tanstack/react-router' {
       path: '/export'
       fullPath: '/dashboard/export'
       preLoaderRoute: typeof DashboardExportRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/challenges': {
+      id: '/dashboard/challenges'
+      path: '/challenges'
+      fullPath: '/dashboard/challenges'
+      preLoaderRoute: typeof DashboardChallengesRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/budget': {
@@ -326,9 +384,12 @@ interface DashboardRouteChildren {
   DashboardAssistantRoute: typeof DashboardAssistantRoute
   DashboardBillsRoute: typeof DashboardBillsRoute
   DashboardBudgetRoute: typeof DashboardBudgetRoute
+  DashboardChallengesRoute: typeof DashboardChallengesRoute
   DashboardExportRoute: typeof DashboardExportRoute
   DashboardGoalsRoute: typeof DashboardGoalsRoute
   DashboardInvestmentsRoute: typeof DashboardInvestmentsRoute
+  DashboardMicroObjectivesRoute: typeof DashboardMicroObjectivesRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardScannerRoute: typeof DashboardScannerRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardSubscriptionsRoute: typeof DashboardSubscriptionsRoute
@@ -340,9 +401,12 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAssistantRoute: DashboardAssistantRoute,
   DashboardBillsRoute: DashboardBillsRoute,
   DashboardBudgetRoute: DashboardBudgetRoute,
+  DashboardChallengesRoute: DashboardChallengesRoute,
   DashboardExportRoute: DashboardExportRoute,
   DashboardGoalsRoute: DashboardGoalsRoute,
   DashboardInvestmentsRoute: DashboardInvestmentsRoute,
+  DashboardMicroObjectivesRoute: DashboardMicroObjectivesRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
   DashboardScannerRoute: DashboardScannerRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardSubscriptionsRoute: DashboardSubscriptionsRoute,

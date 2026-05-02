@@ -129,7 +129,7 @@ function ChallengesPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-bold text-violet-bright">{pct}%</span>
+                    <span className="text-xs font-bold text-violet-bright">{String(pct)}%</span>
                     {isActive && (
                       <button onClick={() => endChallenge(ch.id as string)} className="text-xs text-muted-foreground hover:text-destructive">End</button>
                     )}
