@@ -17,8 +17,10 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/transactions'
 import { Route as DashboardSubscriptionsRouteImport } from './routes/dashboard/subscriptions'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as DashboardScannerRouteImport } from './routes/dashboard/scanner'
 import { Route as DashboardInvestmentsRouteImport } from './routes/dashboard/investments'
 import { Route as DashboardGoalsRouteImport } from './routes/dashboard/goals'
+import { Route as DashboardExportRouteImport } from './routes/dashboard/export'
 import { Route as DashboardBudgetRouteImport } from './routes/dashboard/budget'
 import { Route as DashboardBillsRouteImport } from './routes/dashboard/bills'
 import { Route as DashboardAssistantRouteImport } from './routes/dashboard/assistant'
@@ -63,6 +65,11 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardScannerRoute = DashboardScannerRouteImport.update({
+  id: '/scanner',
+  path: '/scanner',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardInvestmentsRoute = DashboardInvestmentsRouteImport.update({
   id: '/investments',
   path: '/investments',
@@ -71,6 +78,11 @@ const DashboardInvestmentsRoute = DashboardInvestmentsRouteImport.update({
 const DashboardGoalsRoute = DashboardGoalsRouteImport.update({
   id: '/goals',
   path: '/goals',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardExportRoute = DashboardExportRouteImport.update({
+  id: '/export',
+  path: '/export',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardBudgetRoute = DashboardBudgetRouteImport.update({
@@ -97,8 +109,10 @@ export interface FileRoutesByFullPath {
   '/dashboard/assistant': typeof DashboardAssistantRoute
   '/dashboard/bills': typeof DashboardBillsRoute
   '/dashboard/budget': typeof DashboardBudgetRoute
+  '/dashboard/export': typeof DashboardExportRoute
   '/dashboard/goals': typeof DashboardGoalsRoute
   '/dashboard/investments': typeof DashboardInvestmentsRoute
+  '/dashboard/scanner': typeof DashboardScannerRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
@@ -111,8 +125,10 @@ export interface FileRoutesByTo {
   '/dashboard/assistant': typeof DashboardAssistantRoute
   '/dashboard/bills': typeof DashboardBillsRoute
   '/dashboard/budget': typeof DashboardBudgetRoute
+  '/dashboard/export': typeof DashboardExportRoute
   '/dashboard/goals': typeof DashboardGoalsRoute
   '/dashboard/investments': typeof DashboardInvestmentsRoute
+  '/dashboard/scanner': typeof DashboardScannerRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
@@ -127,8 +143,10 @@ export interface FileRoutesById {
   '/dashboard/assistant': typeof DashboardAssistantRoute
   '/dashboard/bills': typeof DashboardBillsRoute
   '/dashboard/budget': typeof DashboardBudgetRoute
+  '/dashboard/export': typeof DashboardExportRoute
   '/dashboard/goals': typeof DashboardGoalsRoute
   '/dashboard/investments': typeof DashboardInvestmentsRoute
+  '/dashboard/scanner': typeof DashboardScannerRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
@@ -144,8 +162,10 @@ export interface FileRouteTypes {
     | '/dashboard/assistant'
     | '/dashboard/bills'
     | '/dashboard/budget'
+    | '/dashboard/export'
     | '/dashboard/goals'
     | '/dashboard/investments'
+    | '/dashboard/scanner'
     | '/dashboard/settings'
     | '/dashboard/subscriptions'
     | '/dashboard/transactions'
@@ -158,8 +178,10 @@ export interface FileRouteTypes {
     | '/dashboard/assistant'
     | '/dashboard/bills'
     | '/dashboard/budget'
+    | '/dashboard/export'
     | '/dashboard/goals'
     | '/dashboard/investments'
+    | '/dashboard/scanner'
     | '/dashboard/settings'
     | '/dashboard/subscriptions'
     | '/dashboard/transactions'
@@ -173,8 +195,10 @@ export interface FileRouteTypes {
     | '/dashboard/assistant'
     | '/dashboard/bills'
     | '/dashboard/budget'
+    | '/dashboard/export'
     | '/dashboard/goals'
     | '/dashboard/investments'
+    | '/dashboard/scanner'
     | '/dashboard/settings'
     | '/dashboard/subscriptions'
     | '/dashboard/transactions'
@@ -246,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/scanner': {
+      id: '/dashboard/scanner'
+      path: '/scanner'
+      fullPath: '/dashboard/scanner'
+      preLoaderRoute: typeof DashboardScannerRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/investments': {
       id: '/dashboard/investments'
       path: '/investments'
@@ -258,6 +289,13 @@ declare module '@tanstack/react-router' {
       path: '/goals'
       fullPath: '/dashboard/goals'
       preLoaderRoute: typeof DashboardGoalsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/export': {
+      id: '/dashboard/export'
+      path: '/export'
+      fullPath: '/dashboard/export'
+      preLoaderRoute: typeof DashboardExportRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/budget': {
@@ -288,8 +326,10 @@ interface DashboardRouteChildren {
   DashboardAssistantRoute: typeof DashboardAssistantRoute
   DashboardBillsRoute: typeof DashboardBillsRoute
   DashboardBudgetRoute: typeof DashboardBudgetRoute
+  DashboardExportRoute: typeof DashboardExportRoute
   DashboardGoalsRoute: typeof DashboardGoalsRoute
   DashboardInvestmentsRoute: typeof DashboardInvestmentsRoute
+  DashboardScannerRoute: typeof DashboardScannerRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardSubscriptionsRoute: typeof DashboardSubscriptionsRoute
   DashboardTransactionsRoute: typeof DashboardTransactionsRoute
@@ -300,8 +340,10 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAssistantRoute: DashboardAssistantRoute,
   DashboardBillsRoute: DashboardBillsRoute,
   DashboardBudgetRoute: DashboardBudgetRoute,
+  DashboardExportRoute: DashboardExportRoute,
   DashboardGoalsRoute: DashboardGoalsRoute,
   DashboardInvestmentsRoute: DashboardInvestmentsRoute,
+  DashboardScannerRoute: DashboardScannerRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardSubscriptionsRoute: DashboardSubscriptionsRoute,
   DashboardTransactionsRoute: DashboardTransactionsRoute,

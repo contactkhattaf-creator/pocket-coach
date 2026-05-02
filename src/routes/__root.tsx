@@ -29,10 +29,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Moniq — AI money coach for the next generation" },
-      { name: "description", content: "Moniq is the AI-powered finance platform for students and young pros. Track expenses in MAD, decode your spending, and grow your Financial Discipline Score." },
+      { title: "Monique — AI money coach for the next generation" },
+      { name: "description", content: "Monique is the AI-powered finance platform for students and young pros. Track expenses in MAD, decode your spending, and grow your Financial Discipline Score." },
       { name: "author", content: "Aya Khattaf" },
-      { property: "og:title", content: "Moniq — AI money coach for the next generation" },
+      { property: "og:title", content: "Monique — AI money coach for the next generation" },
       { property: "og:description", content: "Track expenses, analyze spending, and get smart financial insights — instantly." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

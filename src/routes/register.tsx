@@ -43,7 +43,7 @@ function RegisterPage() {
         <div className="text-center">
           <Link to="/" className="inline-flex items-center gap-2">
             <MoniqLogo size={40} className="text-violet-bright" />
-            <span className="font-display text-2xl font-bold text-foreground">moniq</span>
+            <span className="font-display text-2xl font-bold text-foreground">monique</span>
           </Link>
           <h1 className="mt-6 font-display text-3xl font-bold text-foreground">Create your account</h1>
           <p className="mt-2 text-sm text-muted-foreground">Step {step} of 2</p>

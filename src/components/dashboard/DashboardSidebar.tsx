@@ -16,6 +16,8 @@ import {
   ChevronRight,
   Menu,
   X,
+  ScanLine,
+  Download,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -27,6 +29,8 @@ const navItems = [
   { label: "Investments", icon: TrendingUp, to: "/dashboard/investments" as const },
   { label: "Subscriptions", icon: CreditCard, to: "/dashboard/subscriptions" as const },
   { label: "Bills", icon: FileText, to: "/dashboard/bills" as const },
+  { label: "Receipt Scanner", icon: ScanLine, to: "/dashboard/scanner" as const },
+  { label: "Export Reports", icon: Download, to: "/dashboard/export" as const },
   { label: "AI Assistant", icon: MessageSquare, to: "/dashboard/assistant" as const },
   { label: "Settings", icon: Settings, to: "/dashboard/settings" as const },
 ];
@@ -48,14 +52,11 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
 
   const sidebarContent = (
     <>
-      {/* Logo */}
       <div className="flex items-center gap-2 px-4 py-5">
         <MoniqLogo size={28} className="text-violet-bright shrink-0" />
-        {!collapsed && <span className="font-display text-lg font-bold tracking-tight text-foreground">moniq</span>}
+        {!collapsed && <span className="font-display text-lg font-bold tracking-tight text-foreground">monique</span>}
       </div>
-
-      {/* Nav */}
-      <nav className="mt-2 flex flex-1 flex-col gap-0.5 px-2">
+      <nav className="mt-2 flex flex-1 flex-col gap-0.5 px-2 overflow-y-auto">
         {navItems.map((item) => {
           const active = isActive(item.to);
           return (
@@ -75,8 +76,6 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
           );
         })}
       </nav>
-
-      {/* Bottom */}
       <div className="mt-auto border-t border-border px-2 py-3">
         <button
           onClick={handleLogout}
@@ -91,7 +90,6 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Desktop sidebar */}
       <aside
         className={`hidden flex-col border-r border-border bg-card transition-all duration-300 lg:flex ${
           collapsed ? "w-[68px]" : "w-[240px]"
@@ -107,18 +105,16 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
         </button>
       </aside>
 
-      {/* Mobile header */}
       <div className="fixed inset-x-0 top-0 z-40 flex items-center justify-between border-b border-border bg-card/95 px-4 py-3 backdrop-blur lg:hidden">
         <div className="flex items-center gap-2">
           <MoniqLogo size={24} className="text-violet-bright" />
-          <span className="font-display text-base font-bold text-foreground">moniq</span>
+          <span className="font-display text-base font-bold text-foreground">monique</span>
         </div>
         <button onClick={() => setMobileOpen(!mobileOpen)} className="rounded-lg p-2 text-foreground hover:bg-surface">
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setMobileOpen(false)}>
           <div
@@ -130,7 +126,6 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      {/* Main content */}
       <main className="flex-1 overflow-y-auto pt-16 lg:pt-0">
         <div className="mx-auto max-w-7xl p-6 lg:p-8">
           {children}

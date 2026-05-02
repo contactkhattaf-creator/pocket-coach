@@ -29,10 +29,10 @@ function LoginPage() {
         <div className="text-center">
           <Link to="/" className="inline-flex items-center gap-2">
             <MoniqLogo size={40} className="text-violet-bright" />
-            <span className="font-display text-2xl font-bold text-foreground">moniq</span>
+            <span className="font-display text-2xl font-bold text-foreground">monique</span>
           </Link>
           <h1 className="mt-6 font-display text-3xl font-bold text-foreground">Welcome back</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Sign in to your Moniq account</p>
+          <p className="mt-2 text-sm text-muted-foreground">Sign in to your Monique account</p>
         </div>
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           {error && <div className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</div>}

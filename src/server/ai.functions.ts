@@ -15,7 +15,7 @@ export const generateInsights = createServerFn({ method: "POST" })
       .limit(50);
 
     if (!transactions || transactions.length < 3) {
-      return { insight: "Keep adding transactions so Moniq can generate personalized insights for you!" };
+      return { insight: "Keep adding transactions so Monique can generate personalized insights for you!" };
     }
 
     const totalExpense = transactions.filter((t) => t.type === "expense").reduce((s, t) => s + Number(t.amount), 0);

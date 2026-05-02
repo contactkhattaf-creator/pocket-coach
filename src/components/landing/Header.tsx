@@ -1,13 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import moniqLogo from "@/assets/moniq-logo.jpg";
+import { MoniqLogo } from "@/components/MoniqLogo";
 
 export function Header() {
   return (
     <header className="absolute inset-x-0 top-0 z-30">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <Link to="/" className="flex items-center gap-2">
-          <img src={moniqLogo} alt="Moniq logo" className="h-9 w-9 rounded-full object-cover" />
-          <span className="font-display text-2xl font-bold text-ink">moniq</span>
+          <MoniqLogo size={36} className="text-violet-bright" />
+          <span className="font-display text-2xl font-bold text-ink">monique</span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-ink/80 md:flex">
           <a href="#features" className="hover:text-ink">Features</a>

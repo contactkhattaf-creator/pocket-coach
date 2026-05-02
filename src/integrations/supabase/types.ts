@@ -233,11 +233,13 @@ export type Database = {
         Row: {
           age: number | null
           avatar_url: string | null
+          bio: string | null
           created_at: string
           currency: string
           full_name: string | null
           id: string
           phone: string | null
+          pronouns: string | null
           salary: number | null
           salary_frequency: string | null
           updated_at: string
@@ -245,11 +247,13 @@ export type Database = {
         Insert: {
           age?: number | null
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           currency?: string
           full_name?: string | null
           id: string
           phone?: string | null
+          pronouns?: string | null
           salary?: number | null
           salary_frequency?: string | null
           updated_at?: string
@@ -257,11 +261,13 @@ export type Database = {
         Update: {
           age?: number | null
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           currency?: string
           full_name?: string | null
           id?: string
           phone?: string | null
+          pronouns?: string | null
           salary?: number | null
           salary_frequency?: string | null
           updated_at?: string
