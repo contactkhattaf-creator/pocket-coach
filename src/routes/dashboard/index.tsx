@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDashboard } from "@/routes/dashboard";
-import { TrendingUp, TrendingDown, Target, Flame, ArrowRight, CreditCard, Zap } from "lucide-react";
+import { TrendingUp, TrendingDown, Target, Flame, ArrowRight, CreditCard, Zap, Brain, Shield } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { AnimateIn, AnimatedCounter } from "@/hooks/use-animate-on-scroll";
 
