@@ -95,7 +95,26 @@ function DashboardOverview() {
         </div>
       </AnimateIn>
 
-      {/* Quick Stats */}
+      {/* Financial Profile Banner */}
+      {profile?.financial_profile_type && (
+        <AnimateIn delay={120}>
+          <a href="/dashboard/profile" className="mb-6 flex items-center gap-4 rounded-2xl bg-card p-4 ring-1 ring-border transition-all hover:ring-violet-bright/30 hover:-translate-y-0.5">
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-violet-bright/15">
+              <Shield className="h-6 w-6 text-violet-bright" />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs text-muted-foreground">Your Financial Profile</p>
+              <p className="text-sm font-bold text-foreground capitalize">{String(profile.financial_profile_type).replace(/_/g, " ")}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground">FDS</p>
+              <p className="font-display text-xl font-bold text-violet-bright">{String(profile.fds_score || 0)}</p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+          </a>
+        </AnimateIn>
+      )}
+
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {[
           { icon: TrendingUp, label: "Total Saved", value: savedTotal, suffix: " MAD", color: "text-success", bg: "from-emerald-500/10 to-transparent" },
