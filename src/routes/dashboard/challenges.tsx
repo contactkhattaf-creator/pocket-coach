@@ -125,7 +125,7 @@ function ChallengesPage() {
                     <Flame className={`h-5 w-5 ${isActive ? "text-warning" : "text-muted-foreground"}`} />
                     <div>
                       <h3 className="text-sm font-bold text-foreground">{String(ch.name)}</h3>
-                      {ch.description && <p className="text-xs text-muted-foreground">{String(ch.description)}</p>}
+                      {ch.description ? <p className="text-xs text-muted-foreground">{String(ch.description)}</p> : null}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
