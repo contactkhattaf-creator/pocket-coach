@@ -96,12 +96,13 @@ function DashboardOverview() {
       </AnimateIn>
 
       {/* Quick Stats */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {[
           { icon: TrendingUp, label: "Total Saved", value: savedTotal, suffix: " MAD", color: "text-success", bg: "from-emerald-500/10 to-transparent" },
           { icon: Target, label: "Active Goals", value: goals.length, suffix: "", color: "text-violet-bright", bg: "from-violet-500/10 to-transparent" },
           { icon: Flame, label: "Streak", value: currentStreak, suffix: " days", color: "text-warning", bg: "from-amber-500/10 to-transparent" },
           { icon: CreditCard, label: "Upcoming Bills", value: bills.length, suffix: "", color: "text-magenta", bg: "from-pink-500/10 to-transparent" },
+          { icon: Brain, label: "FDS Score", value: Number(profile?.fds_score || 0), suffix: "/100", color: "text-violet-bright", bg: "from-violet-500/10 to-transparent" },
         ].map((stat, i) => (
           <AnimateIn key={stat.label} delay={160 + i * 80} direction={i % 2 === 0 ? "up" : "scale"}>
             <div className={`group rounded-2xl bg-gradient-to-br ${stat.bg} bg-card p-5 ring-1 ring-border transition-all duration-300 hover:ring-violet-bright/30 hover:-translate-y-1 hover:shadow-card`}>
