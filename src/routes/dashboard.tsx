@@ -40,14 +40,7 @@ function DashboardLayout() {
   }, [navigate]);
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-center">
-          <MoniqLogo size={48} className="mx-auto text-violet-bright animate-pulse" />
-          <p className="mt-4 text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (
