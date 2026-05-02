@@ -15,9 +15,13 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/transactions'
+import { Route as DashboardSubscriptionsRouteImport } from './routes/dashboard/subscriptions'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
 import { Route as DashboardInvestmentsRouteImport } from './routes/dashboard/investments'
 import { Route as DashboardGoalsRouteImport } from './routes/dashboard/goals'
 import { Route as DashboardBudgetRouteImport } from './routes/dashboard/budget'
+import { Route as DashboardBillsRouteImport } from './routes/dashboard/bills'
+import { Route as DashboardAssistantRouteImport } from './routes/dashboard/assistant'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -49,6 +53,16 @@ const DashboardTransactionsRoute = DashboardTransactionsRouteImport.update({
   path: '/transactions',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardSubscriptionsRoute = DashboardSubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardInvestmentsRoute = DashboardInvestmentsRouteImport.update({
   id: '/investments',
   path: '/investments',
@@ -64,15 +78,29 @@ const DashboardBudgetRoute = DashboardBudgetRouteImport.update({
   path: '/budget',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardBillsRoute = DashboardBillsRouteImport.update({
+  id: '/bills',
+  path: '/bills',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAssistantRoute = DashboardAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/dashboard/assistant': typeof DashboardAssistantRoute
+  '/dashboard/bills': typeof DashboardBillsRoute
   '/dashboard/budget': typeof DashboardBudgetRoute
   '/dashboard/goals': typeof DashboardGoalsRoute
   '/dashboard/investments': typeof DashboardInvestmentsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -80,9 +108,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/dashboard/assistant': typeof DashboardAssistantRoute
+  '/dashboard/bills': typeof DashboardBillsRoute
   '/dashboard/budget': typeof DashboardBudgetRoute
   '/dashboard/goals': typeof DashboardGoalsRoute
   '/dashboard/investments': typeof DashboardInvestmentsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
 }
@@ -92,9 +124,13 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/dashboard/assistant': typeof DashboardAssistantRoute
+  '/dashboard/bills': typeof DashboardBillsRoute
   '/dashboard/budget': typeof DashboardBudgetRoute
   '/dashboard/goals': typeof DashboardGoalsRoute
   '/dashboard/investments': typeof DashboardInvestmentsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -105,9 +141,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/register'
+    | '/dashboard/assistant'
+    | '/dashboard/bills'
     | '/dashboard/budget'
     | '/dashboard/goals'
     | '/dashboard/investments'
+    | '/dashboard/settings'
+    | '/dashboard/subscriptions'
     | '/dashboard/transactions'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
@@ -115,9 +155,13 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/dashboard/assistant'
+    | '/dashboard/bills'
     | '/dashboard/budget'
     | '/dashboard/goals'
     | '/dashboard/investments'
+    | '/dashboard/settings'
+    | '/dashboard/subscriptions'
     | '/dashboard/transactions'
     | '/dashboard'
   id:
@@ -126,9 +170,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/register'
+    | '/dashboard/assistant'
+    | '/dashboard/bills'
     | '/dashboard/budget'
     | '/dashboard/goals'
     | '/dashboard/investments'
+    | '/dashboard/settings'
+    | '/dashboard/subscriptions'
     | '/dashboard/transactions'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
@@ -184,6 +232,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTransactionsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/subscriptions': {
+      id: '/dashboard/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/dashboard/subscriptions'
+      preLoaderRoute: typeof DashboardSubscriptionsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/investments': {
       id: '/dashboard/investments'
       path: '/investments'
@@ -205,21 +267,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBudgetRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/bills': {
+      id: '/dashboard/bills'
+      path: '/bills'
+      fullPath: '/dashboard/bills'
+      preLoaderRoute: typeof DashboardBillsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/assistant': {
+      id: '/dashboard/assistant'
+      path: '/assistant'
+      fullPath: '/dashboard/assistant'
+      preLoaderRoute: typeof DashboardAssistantRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
+  DashboardAssistantRoute: typeof DashboardAssistantRoute
+  DashboardBillsRoute: typeof DashboardBillsRoute
   DashboardBudgetRoute: typeof DashboardBudgetRoute
   DashboardGoalsRoute: typeof DashboardGoalsRoute
   DashboardInvestmentsRoute: typeof DashboardInvestmentsRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardSubscriptionsRoute: typeof DashboardSubscriptionsRoute
   DashboardTransactionsRoute: typeof DashboardTransactionsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAssistantRoute: DashboardAssistantRoute,
+  DashboardBillsRoute: DashboardBillsRoute,
   DashboardBudgetRoute: DashboardBudgetRoute,
   DashboardGoalsRoute: DashboardGoalsRoute,
   DashboardInvestmentsRoute: DashboardInvestmentsRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardSubscriptionsRoute: DashboardSubscriptionsRoute,
   DashboardTransactionsRoute: DashboardTransactionsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
