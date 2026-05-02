@@ -157,11 +157,11 @@ function ChallengesPage() {
                     })}
                   </div>
                 )}
-                {!isActive && pct >= 100 && ch.reward_badge && (
+                {!isActive && pct >= 100 && ch.reward_badge ? (
                   <div className="mt-2 flex items-center gap-2 text-xs text-success">
                     <Trophy className="h-4 w-4" /> Badge earned: {String(ch.reward_badge).replace(/_/g, " ")}
                   </div>
-                )}
+                ) : null}
               </div>
             </AnimateIn>
           );
