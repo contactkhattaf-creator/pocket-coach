@@ -20,6 +20,9 @@ import {
   Download,
   Bell,
   Search,
+  Trophy,
+  Crosshair,
+  Brain,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
