@@ -7,7 +7,8 @@ export function MoniqLogo({ className = "", size = 32 }: { className?: string; s
       alt="Monique"
       width={size}
       height={size}
-      className={`rounded-xl object-cover ${className}`}
+      className={`rounded-[22%] object-cover ${className}`}
+      style={{ minWidth: size, minHeight: size }}
     />
   );
 }
@@ -15,7 +16,7 @@ export function MoniqLogo({ className = "", size = 32 }: { className?: string; s
 export function MoniqWordmark({ className = "" }: { className?: string }) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
-      <MoniqLogo size={36} />
+      <MoniqLogo size={38} />
       <span className="font-display text-xl font-bold tracking-tight">monique</span>
     </div>
   );
