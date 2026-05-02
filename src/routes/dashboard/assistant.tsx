@@ -73,7 +73,7 @@ function AssistantPage() {
   return (
     <div className="flex h-[calc(100vh-8rem)] flex-col lg:h-[calc(100vh-4rem)]">
       <div className="mb-4">
-        <h1 className="font-display text-3xl font-bold text-foreground">Moniq Assistant</h1>
+        <h1 className="font-display text-3xl font-bold text-foreground">Monique Assistant</h1>
         <p className="mt-1 text-sm text-muted-foreground">Ask anything about your finances</p>
       </div>
 
