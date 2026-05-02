@@ -116,7 +116,7 @@ function MicroObjectivesPage() {
                     <p className="text-sm font-medium text-foreground truncate">{obj.title as string}</p>
                     <div className="mt-1 flex items-center gap-3">
                       <span className="text-xs text-muted-foreground capitalize">{obj.category as string}</span>
-                      {obj.due_date && <span className="text-xs text-muted-foreground">Due: {obj.due_date as string}</span>}
+                      {obj.due_date ? <span className="text-xs text-muted-foreground">Due: {String(obj.due_date)}</span> : null}
                     </div>
                     {target > 0 && (
                       <div className="mt-2 flex items-center gap-3">
