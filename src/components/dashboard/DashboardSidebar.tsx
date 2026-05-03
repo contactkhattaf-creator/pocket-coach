@@ -163,6 +163,11 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const [profile, setProfile] = useState<{ full_name?: string; avatar_url?: string } | null>(null);
   const [userEmail, setUserEmail] = useState("");
+  const [notifData, setNotifData] = useState<{
+    transactions: { amount: number; type: string; description: string; date: string }[];
+    bills: { name: string; amount: number; due_date: string | null; is_paid: boolean }[];
+    goals: { name: string; current_amount: number; target_amount: number }[];
+  }>({ transactions: [], bills: [], goals: [] });
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -171,8 +176,25 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
       supabase.from("profiles").select("full_name, avatar_url").eq("id", data.user.id).single().then(({ data: p }) => {
         if (p) setProfile(p as { full_name?: string; avatar_url?: string });
       });
+      // Fetch notification data
+      Promise.all([
+        supabase.from("transactions").select("amount, type, description, date").eq("user_id", data.user.id).order("date", { ascending: false }).limit(100),
+        supabase.from("bills").select("name, amount, due_date, is_paid").eq("user_id", data.user.id),
+        supabase.from("goals").select("name, current_amount, target_amount").eq("user_id", data.user.id),
+      ]).then(([txRes, billRes, goalRes]) => {
+        setNotifData({
+          transactions: (txRes.data || []) as { amount: number; type: string; description: string; date: string }[],
+          bills: (billRes.data || []) as { name: string; amount: number; due_date: string | null; is_paid: boolean }[],
+          goals: (goalRes.data || []) as { name: string; current_amount: number; target_amount: number }[],
+        });
+      });
     });
   }, []);
+
+  const notifications = useMemo(
+    () => generateSmartNotifications(notifData.transactions, notifData.bills, notifData.goals),
+    [notifData],
+  );
 
   const isActive = (to: string) => {
     if (to === "/dashboard") return location.pathname === "/dashboard";
