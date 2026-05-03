@@ -1,4 +1,4 @@
-import moniqueLogo from "@/assets/monique-logo.jpeg";
+import moniqueLogo from "@/assets/monique-logo.png";
 
 export function MoniqLogo({ className = "", size = 32 }: { className?: string; size?: number }) {
   return (
