@@ -25,8 +25,120 @@ import {
   Trophy,
   Crosshair,
   Brain,
+  AlertTriangle,
+  Lightbulb,
+  PiggyBank,
+  Sparkles,
+  Receipt,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+
+/* ── AI Notification helpers ── */
+interface SmartNotification {
+  id: string;
+  icon: React.ElementType;
+  color: string;
+  title: string;
+  body: string;
+  time: string;
+}
+
+function generateSmartNotifications(
+  transactions: { amount: number; type: string; description: string; date: string }[],
+  bills: { name: string; amount: number; due_date: string | null; is_paid: boolean }[],
+  goals: { name: string; current_amount: number; target_amount: number }[],
+): SmartNotification[] {
+  const notes: SmartNotification[] = [];
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
+
+  // 1 — Spending alert (top category today/yesterday)
+  const recent = transactions.filter((t) => {
+    const d = new Date(t.date);
+    const diff = (today.getTime() - d.getTime()) / 86400000;
+    return t.type === "expense" && diff <= 2;
+  });
+  const totalRecent = recent.reduce((s, t) => s + t.amount, 0);
+  if (totalRecent > 0) {
+    notes.push({
+      id: "spend",
+      icon: AlertTriangle,
+      color: "text-amber-500 bg-amber-500/15",
+      title: "Spending Alert",
+      body: `You've spent ${totalRecent.toFixed(0)} MAD in the last 48 h. Review your expenses to stay on track.`,
+      time: "Today",
+    });
+  }
+
+  // 2 — Bill reminders (due within 3 days)
+  const upcoming = bills.filter((b) => {
+    if (!b.due_date || b.is_paid) return false;
+    const diff = (new Date(b.due_date).getTime() - today.getTime()) / 86400000;
+    return diff >= 0 && diff <= 3;
+  });
+  upcoming.forEach((b) => {
+    notes.push({
+      id: `bill-${b.name}`,
+      icon: Receipt,
+      color: "text-red-500 bg-red-500/15",
+      title: "Bill Due Soon",
+      body: `${b.name} (${Number(b.amount).toFixed(0)} MAD) is due on ${b.due_date}.`,
+      time: b.due_date === todayStr ? "Today" : "Upcoming",
+    });
+  });
+
+  // 3 — Goal progress
+  goals.forEach((g) => {
+    const pct = Number(g.target_amount) > 0 ? Math.round((Number(g.current_amount) / Number(g.target_amount)) * 100) : 0;
+    if (pct >= 75 && pct < 100) {
+      notes.push({
+        id: `goal-${g.name}`,
+        icon: Target,
+        color: "text-emerald-500 bg-emerald-500/15",
+        title: "Goal Almost There!",
+        body: `"${g.name}" is at ${pct}% — you're so close!`,
+        time: "Progress",
+      });
+    }
+  });
+
+  // 4 — Savings tip (always show one)
+  const tips = [
+    "Try a no-spend day today to boost your savings rate.",
+    "Review subscriptions you haven't used this month.",
+    "Set up an automatic transfer to your savings goal.",
+    "Round up your purchases mentally — small savings add up.",
+    "Compare prices before your next big purchase.",
+  ];
+  const tipIndex = today.getDate() % tips.length;
+  notes.push({
+    id: "tip",
+    icon: Lightbulb,
+    color: "text-violet-500 bg-violet-500/15",
+    title: "Daily Savings Tip",
+    body: tips[tipIndex],
+    time: "Insight",
+  });
+
+  // 5 — AI summary
+  if (transactions.length > 5) {
+    const income = transactions.filter((t) => t.type === "income").reduce((s, t) => s + t.amount, 0);
+    const expense = transactions.filter((t) => t.type === "expense").reduce((s, t) => s + t.amount, 0);
+    const rate = income > 0 ? Math.round(((income - expense) / income) * 100) : 0;
+    notes.push({
+      id: "ai-summary",
+      icon: Sparkles,
+      color: "text-blue-500 bg-blue-500/15",
+      title: "AI Financial Summary",
+      body: rate > 0
+        ? `Your savings rate is ${rate}%. Keep it up!`
+        : `You're spending more than you earn. Let's work on a budget.`,
+      time: "Daily",
+    });
+  }
+
+  return notes;
+}
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, to: "/dashboard" as const },
