@@ -43,9 +43,10 @@ function BudgetPage() {
   const totalBudget = budgets.reduce((s, b) => s + Number(b.amount), 0);
   const totalSpent = Object.values(spentByCategory).reduce((s, v) => s + v, 0);
 
-  const donutData = budgets.map((b) => {
+  const BUDGET_COLORS = ["#7C3AED", "#EC4899", "#06B6D4", "#F59E0B", "#10B981", "#6366F1", "#F97316", "#14B8A6"];
+  const donutData = budgets.map((b, i) => {
     const cat = categories.find((c) => c.id === b.category_id);
-    return { name: cat?.name || "Other", value: Number(b.amount), color: cat?.color || "#7C3AED" };
+    return { name: cat?.name || "Other", value: Number(b.amount), color: cat?.color || BUDGET_COLORS[i % BUDGET_COLORS.length] };
   });
 
   async function handleSaveBudget(categoryId: string) {
@@ -100,7 +101,7 @@ function BudgetPage() {
               <div key={cat.id} className="rounded-2xl bg-card p-4 ring-1 ring-border">
                 <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">{cat.icon}</span>
+                    <span className="h-3 w-3 rounded-full shrink-0" style={{ background: cat.color || "#7C3AED" }} />
                     <span className="text-sm font-medium text-foreground">{cat.name}</span>
                   </div>
                   {isEditing ? (
