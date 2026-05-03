@@ -1,6 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MoniqLogo } from "@/components/MoniqLogo";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   LayoutDashboard,
   ArrowLeftRight,
