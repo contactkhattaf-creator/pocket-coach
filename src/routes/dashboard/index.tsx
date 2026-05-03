@@ -1,14 +1,39 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDashboard } from "@/routes/dashboard";
-import { TrendingUp, TrendingDown, Target, Flame, ArrowRight, CreditCard, Zap, Brain, Shield } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
-import { AnimateIn, AnimatedCounter } from "@/hooks/use-animate-on-scroll";
+import {
+  TrendingUp,
+  TrendingDown,
+  Target,
+  Flame,
+  ArrowRight,
+  CreditCard,
+  Wallet,
+  PiggyBank,
+  MoreHorizontal,
+  ChevronRight,
+  Brain,
+} from "lucide-react";
+import {
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from "recharts";
 
 export const Route = createFileRoute("/dashboard/")({
   component: DashboardOverview,
 });
+
+/* ─── color palette for category cards ─── */
+const CARD_STYLES = [
+  { bg: "bg-[#C8F7C5]", text: "text-[#1a3a1a]", icon: "text-[#2d6a2d]" },
+  { bg: "bg-[#FFF3B0]", text: "text-[#4a3f0a]", icon: "text-[#7a6a12]" },
+  { bg: "bg-[#D4B8FF]", text: "text-[#2a1a4a]", icon: "text-[#5a3a8a]" },
+];
 
 function DashboardOverview() {
   const { user } = useDashboard();
@@ -54,198 +79,362 @@ function DashboardOverview() {
   const monthlyData = getMonthlyData(transactions);
   const currentStreak = calculateStreak(streaks);
   const savedTotal = goals.reduce((s, g) => s + Number(g.current_amount), 0);
+  const goalTarget = goals.reduce((s, g) => s + Number(g.target_amount), 0);
+
+  const summaryCards = [
+    {
+      title: "Savings",
+      count: goals.length,
+      label: "Coverage",
+      value: `${savedTotal.toLocaleString("fr-MA")} MAD`,
+      icon: PiggyBank,
+    },
+    {
+      title: "Expenses",
+      count: transactions.filter((t) => t.type === "expense").length,
+      label: "Coverage",
+      value: `${totalExpense.toLocaleString("fr-MA")} MAD`,
+      icon: Wallet,
+    },
+    {
+      title: "Income",
+      count: transactions.filter((t) => t.type === "income").length,
+      label: "Coverage",
+      value: `${totalIncome.toLocaleString("fr-MA")} MAD`,
+      icon: TrendingUp,
+    },
+  ];
 
   return (
-    <div>
-      <AnimateIn delay={0}>
-        <div className="mb-8">
-          <h1 className="font-display text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Welcome back{profile?.full_name ? `, ${String(profile.full_name)}` : ""}</p>
-        </div>
-      </AnimateIn>
-
-      {/* Net Worth Hero */}
-      <AnimateIn delay={80}>
-        <div className="group mb-6 rounded-2xl bg-gradient-to-br from-violet-bright/20 via-card to-card p-6 ring-1 ring-border transition-all duration-500 hover:ring-violet-bright/40 hover:shadow-[0_0_40px_-12px_var(--violet-bright)]">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Net Worth</p>
-          <p className="mt-2 font-display text-4xl font-bold text-foreground">
-            <AnimatedCounter value={balance} suffix=" MAD" />
+    <div className="flex flex-col gap-6 lg:flex-row">
+      {/* ─── Main Column ─── */}
+      <div className="flex-1 space-y-6">
+        {/* Greeting */}
+        <div>
+          <h1 className="font-display text-2xl font-bold text-foreground">
+            Hello, {profile?.full_name ? String(profile.full_name) : "there"}
+          </h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            Check & manage your financial status.
           </p>
-          <div className="mt-3 flex items-center gap-2 text-sm">
-            {balance >= 0 ? (
-              <span className="flex items-center gap-1 text-success"><TrendingUp className="h-4 w-4" /> Positive balance</span>
-            ) : (
-              <span className="flex items-center gap-1 text-destructive"><TrendingDown className="h-4 w-4" /> Negative balance</span>
-            )}
+        </div>
+
+        {/* ─── Summary Cards ─── */}
+        <div className="grid gap-4 sm:grid-cols-3">
+          {summaryCards.map((card, i) => {
+            const style = CARD_STYLES[i % CARD_STYLES.length];
+            return (
+              <div
+                key={card.title}
+                className={`group relative overflow-hidden rounded-2xl ${style.bg} p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className={`text-sm font-semibold ${style.text}`}>
+                      {card.title} ({card.count})
+                    </p>
+                  </div>
+                  <button className={`grid h-8 w-8 place-items-center rounded-full bg-black/10 transition hover:bg-black/20 ${style.icon}`}>
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="mt-6">
+                  <p className={`text-xs ${style.text} opacity-60`}>{card.label}</p>
+                  <p className={`mt-1 text-xl font-bold ${style.text}`}>{card.value}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ─── Portfolio Stats Chart ─── */}
+        <div className="rounded-2xl bg-card p-5 ring-1 ring-border">
+          <div className="mb-1 flex items-center justify-between">
+            <div>
+              <h2 className="font-display text-lg font-bold text-foreground">
+                Financial Portfolio Stats
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                {getDateRange()}
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#D4B8FF]" />
+                <span className="text-xs text-muted-foreground">Earning</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#FFF3B0]" />
+                <span className="text-xs text-muted-foreground">Expense</span>
+              </div>
+              <button className="text-muted-foreground hover:text-foreground">
+                <MoreHorizontal className="h-4 w-4" />
+              </button>
+            </div>
           </div>
-          {/* Mini sparkline inside hero */}
-          <div className="mt-4 h-12 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
+
+          <div className="h-[260px] mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={monthlyData}>
                 <defs>
-                  <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(0.58 0.22 295)" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="oklch(0.58 0.22 295)" stopOpacity={0} />
+                  <linearGradient id="incomeGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#D4B8FF" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="#D4B8FF" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="expenseGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#FFF3B0" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#FFF3B0" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <Area type="monotone" dataKey="income" stroke="oklch(0.58 0.22 295)" strokeWidth={2} fill="url(#heroGrad)" dot={false} />
+                <XAxis
+                  dataKey="month"
+                  tick={{ fill: "oklch(0.60 0.03 280)", fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fill: "oklch(0.60 0.03 280)", fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "oklch(0.18 0.025 280)",
+                    border: "1px solid oklch(0.28 0.03 280)",
+                    borderRadius: "12px",
+                    color: "oklch(0.95 0.01 280)",
+                  }}
+                  formatter={(value: unknown) => [`${Number(value).toLocaleString("fr-MA")} MAD`]}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="income"
+                  stroke="#D4B8FF"
+                  strokeWidth={2.5}
+                  fill="url(#incomeGrad)"
+                  dot={false}
+                  activeDot={{ r: 5, fill: "#D4B8FF", stroke: "#1a1a2e", strokeWidth: 2 }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="expense"
+                  stroke="#FFF3B0"
+                  strokeWidth={2.5}
+                  fill="url(#expenseGrad)"
+                  dot={false}
+                  activeDot={{ r: 5, fill: "#FFF3B0", stroke: "#1a1a2e", strokeWidth: 2 }}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
-      </AnimateIn>
 
-      {/* Financial Profile Banner */}
-      {profile?.financial_profile_type ? (
-        <AnimateIn delay={120}>
-          <a href="/dashboard/profile" className="mb-6 flex items-center gap-4 rounded-2xl bg-card p-4 ring-1 ring-border transition-all hover:ring-violet-bright/30 hover:-translate-y-0.5">
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-violet-bright/15">
-              <Shield className="h-6 w-6 text-violet-bright" />
-            </div>
-            <div className="flex-1">
-              <p className="text-xs text-muted-foreground">Your Financial Profile</p>
-              <p className="text-sm font-bold text-foreground capitalize">{String(profile.financial_profile_type).replace(/_/g, " ")}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-muted-foreground">FDS</p>
-              <p className="font-display text-xl font-bold text-violet-bright">{String(profile.fds_score || 0)}</p>
-            </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground" />
-          </a>
-        </AnimateIn>
-      ) : null}
-
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {[
-          { icon: TrendingUp, label: "Total Saved", value: savedTotal, suffix: " MAD", color: "text-success", bg: "from-emerald-500/10 to-transparent" },
-          { icon: Target, label: "Active Goals", value: goals.length, suffix: "", color: "text-violet-bright", bg: "from-violet-500/10 to-transparent" },
-          { icon: Flame, label: "Streak", value: currentStreak, suffix: " days", color: "text-warning", bg: "from-amber-500/10 to-transparent" },
-          { icon: CreditCard, label: "Upcoming Bills", value: bills.length, suffix: "", color: "text-magenta", bg: "from-pink-500/10 to-transparent" },
-          { icon: Brain, label: "FDS Score", value: Number(profile?.fds_score || 0), suffix: "/100", color: "text-violet-bright", bg: "from-violet-500/10 to-transparent" },
-        ].map((stat, i) => (
-          <AnimateIn key={stat.label} delay={160 + i * 80} direction={i % 2 === 0 ? "up" : "scale"}>
-            <div className={`group rounded-2xl bg-gradient-to-br ${stat.bg} bg-card p-5 ring-1 ring-border transition-all duration-300 hover:ring-violet-bright/30 hover:-translate-y-1 hover:shadow-card`}>
-              <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-surface transition-transform duration-300 group-hover:scale-110">
-                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
-                  <p className="mt-0.5 text-lg font-bold text-foreground">
-                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                  </p>
-                </div>
-              </div>
-            </div>
-          </AnimateIn>
-        ))}
-      </div>
-
-      {/* Chart + Recent */}
-      <div className="grid gap-6 lg:grid-cols-5">
-        <AnimateIn delay={500} className="lg:col-span-3">
-          <div className="rounded-2xl bg-card p-5 ring-1 ring-border transition-all duration-300 hover:ring-violet-bright/20">
-            <h2 className="mb-4 font-display text-lg font-bold text-foreground">Income vs Expenses</h2>
-            <div className="h-[260px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyData} barGap={4}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.25 0.02 280)" />
-                  <XAxis dataKey="month" tick={{ fill: "oklch(0.60 0.03 280)", fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: "oklch(0.60 0.03 280)", fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <Tooltip
-                    contentStyle={{ background: "oklch(0.18 0.025 280)", border: "1px solid oklch(0.28 0.03 280)", borderRadius: "12px", color: "oklch(0.95 0.01 280)" }}
-                    formatter={(value: unknown) => [`${Number(value).toLocaleString("fr-MA")} MAD`]}
-                    cursor={{ fill: "oklch(0.22 0.03 280 / 0.5)" }}
-                  />
-                  <Bar dataKey="income" fill="oklch(0.72 0.19 155)" radius={[6, 6, 0, 0]} animationDuration={1200} animationEasing="ease-out" />
-                  <Bar dataKey="expense" fill="oklch(0.58 0.22 295)" radius={[6, 6, 0, 0]} animationDuration={1200} animationEasing="ease-out" animationBegin={200} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </AnimateIn>
-
-        <AnimateIn delay={600} direction="right" className="lg:col-span-2">
+        {/* ─── Bottom Row: Balance + Goals ─── */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Net Balance Card */}
           <div className="rounded-2xl bg-card p-5 ring-1 ring-border">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-display text-lg font-bold text-foreground">Recent</h2>
-              <a href="/dashboard/transactions" className="flex items-center gap-1 text-xs text-violet-bright hover:underline">
-                View all <ArrowRight className="h-3 w-3" />
-              </a>
-            </div>
-            <div className="space-y-2">
-              {transactions.slice(0, 5).map((tx, i) => {
-                const cat = categories.find((c) => c.id === tx.category_id);
-                return (
-                  <div
-                    key={tx.id as string}
-                    className="flex items-center gap-3 rounded-xl bg-surface p-3 transition-all duration-300 hover:bg-surface-hover hover:translate-x-1"
-                    style={{ animationDelay: `${i * 80}ms` }}
-                  >
-                    <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-violet-bright/10">
-                      <Zap className="h-4 w-4 text-violet-bright" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="truncate text-sm font-medium text-foreground">{(tx.description as string) || (cat?.name as string) || "Transaction"}</p>
-                      <p className="text-xs text-muted-foreground">{tx.date as string}</p>
-                    </div>
-                    <p className={`text-sm font-bold ${tx.type === "income" ? "text-success" : "text-destructive"}`}>
-                      {tx.type === "income" ? "+" : "-"}{Number(tx.amount).toLocaleString("fr-MA")} MAD
-                    </p>
-                  </div>
-                );
-              })}
-              {transactions.length === 0 && (
-                <p className="py-8 text-center text-sm text-muted-foreground">No transactions yet</p>
+            <p className="text-xs font-medium text-muted-foreground">Net Balance</p>
+            <p className="mt-2 font-display text-3xl font-bold text-foreground">
+              {balance.toLocaleString("fr-MA")} MAD
+            </p>
+            <div className="mt-2 flex items-center gap-2 text-sm">
+              {balance >= 0 ? (
+                <span className="flex items-center gap-1 rounded-full bg-[#C8F7C5]/15 px-2.5 py-0.5 text-xs font-medium text-[#C8F7C5]">
+                  <TrendingUp className="h-3 w-3" /> Positive
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 rounded-full bg-destructive/15 px-2.5 py-0.5 text-xs font-medium text-destructive">
+                  <TrendingDown className="h-3 w-3" /> Negative
+                </span>
               )}
             </div>
           </div>
-        </AnimateIn>
-      </div>
 
-      {/* Streak Heatmap */}
-      <AnimateIn delay={700}>
-        <div className="mt-6 rounded-2xl bg-card p-5 ring-1 ring-border transition-all duration-300 hover:ring-violet-bright/20">
+          {/* Goals Summary */}
+          <div className="rounded-2xl bg-card p-5 ring-1 ring-border">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium text-muted-foreground">Goals Progress</p>
+              <Link to="/dashboard/goals" className="text-xs text-violet-bright hover:underline">
+                View all
+              </Link>
+            </div>
+            <p className="mt-2 font-display text-3xl font-bold text-foreground">
+              {goals.length} <span className="text-base font-normal text-muted-foreground">active</span>
+            </p>
+            {goalTarget > 0 && (
+              <div className="mt-3">
+                <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                  <span>Total saved</span>
+                  <span>{Math.round((savedTotal / goalTarget) * 100)}%</span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-surface">
+                  <div
+                    className="h-full rounded-full bg-[#D4B8FF] transition-all duration-700"
+                    style={{ width: `${Math.min((savedTotal / goalTarget) * 100, 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ─── Streak Heatmap ─── */}
+        <div className="rounded-2xl bg-card p-5 ring-1 ring-border">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-display text-lg font-bold text-foreground">Activity Streak</h2>
             <div className="flex items-center gap-2 text-sm">
-              <Flame className="h-4 w-4 text-warning" />
+              <Flame className="h-4 w-4 text-[#FFF3B0]" />
               <span className="font-bold text-foreground">{currentStreak} day streak</span>
             </div>
           </div>
           <StreakHeatmap streaks={streaks} />
         </div>
-      </AnimateIn>
+      </div>
 
-      {/* Upcoming Bills */}
-      {bills.length > 0 && (
-        <AnimateIn delay={800}>
-          <div className="mt-6 rounded-2xl bg-card p-5 ring-1 ring-border">
-            <h2 className="mb-4 font-display text-lg font-bold text-foreground">Upcoming Bills</h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {bills.map((bill, i) => (
-                <AnimateIn key={bill.id as string} delay={850 + i * 60} direction="scale">
-                  <div className="flex items-center gap-3 rounded-xl bg-surface p-4 transition-all duration-300 hover:bg-surface-hover hover:-translate-y-0.5">
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-violet-bright/15">
-                      <CreditCard className="h-5 w-5 text-violet-bright" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">{bill.name as string}</p>
-                      <p className="text-xs text-muted-foreground">Due {bill.due_date as string}</p>
-                    </div>
-                    <p className="text-sm font-bold text-foreground">{Number(bill.amount).toLocaleString("fr-MA")} MAD</p>
-                  </div>
-                </AnimateIn>
-              ))}
+      {/* ─── Right Sidebar ─── */}
+      <div className="w-full space-y-4 lg:w-[300px] shrink-0">
+        {/* FDS Score Card */}
+        {profile?.fds_score != null && (
+          <Link
+            to="/dashboard/profile"
+            className="block rounded-2xl bg-card p-5 ring-1 ring-border transition-all hover:ring-violet-bright/30 hover:-translate-y-0.5"
+          >
+            <div className="flex items-center gap-3">
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#D4B8FF]/15">
+                <Brain className="h-6 w-6 text-[#D4B8FF]" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Financial Score</p>
+                <p className="font-display text-2xl font-bold text-foreground">
+                  {String(profile.fds_score)}<span className="text-sm text-muted-foreground">/100</span>
+                </p>
+              </div>
             </div>
+            {profile.financial_profile_type && (
+              <p className="mt-3 rounded-lg bg-[#D4B8FF]/10 px-3 py-1.5 text-center text-xs font-semibold capitalize text-[#D4B8FF]">
+                {String(profile.financial_profile_type).replace(/_/g, " ")}
+              </p>
+            )}
+          </Link>
+        )}
+
+        {/* Recent Transactions */}
+        <div className="rounded-2xl bg-card p-5 ring-1 ring-border">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-sm font-bold text-foreground">Recent Transactions</h2>
+            <Link to="/dashboard/transactions" className="text-xs text-violet-bright hover:underline">
+              View all
+            </Link>
           </div>
-        </AnimateIn>
-      )}
+          <div className="space-y-2">
+            {transactions.slice(0, 6).map((tx) => {
+              const cat = categories.find((c) => c.id === tx.category_id);
+              return (
+                <div
+                  key={tx.id as string}
+                  className="flex items-center gap-3 rounded-xl p-2.5 transition-colors hover:bg-surface"
+                >
+                  <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${
+                    tx.type === "income" ? "bg-[#C8F7C5]/15" : "bg-[#FFF3B0]/15"
+                  }`}>
+                    {tx.type === "income" ? (
+                      <TrendingUp className="h-4 w-4 text-[#C8F7C5]" />
+                    ) : (
+                      <TrendingDown className="h-4 w-4 text-[#FFF3B0]" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {(tx.description as string) || (cat?.name as string) || "Transaction"}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">{tx.date as string}</p>
+                  </div>
+                  <p className={`text-xs font-bold ${tx.type === "income" ? "text-[#C8F7C5]" : "text-[#FFF3B0]"}`}>
+                    {tx.type === "income" ? "+" : "-"}{Number(tx.amount).toLocaleString("fr-MA")}
+                  </p>
+                </div>
+              );
+            })}
+            {transactions.length === 0 && (
+              <p className="py-6 text-center text-xs text-muted-foreground">No transactions yet</p>
+            )}
+          </div>
+        </div>
+
+        {/* Upcoming Bills */}
+        <div className="rounded-2xl bg-card p-5 ring-1 ring-border">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-sm font-bold text-foreground">Upcoming Bills</h2>
+            <Link to="/dashboard/bills" className="text-xs text-violet-bright hover:underline">
+              View all
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {bills.length > 0 ? bills.map((bill) => (
+              <div
+                key={bill.id as string}
+                className="flex items-center justify-between rounded-xl p-2.5 transition-colors hover:bg-surface"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#D4B8FF]/15">
+                    <CreditCard className="h-4 w-4 text-[#D4B8FF]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{bill.name as string}</p>
+                    <p className="text-[11px] text-muted-foreground">Due {bill.due_date as string}</p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-[#FFF3B0] px-3 py-1 text-xs font-semibold text-[#4a3f0a]">
+                  Pay Now
+                </span>
+              </div>
+            )) : (
+              <p className="py-4 text-center text-xs text-muted-foreground">No upcoming bills</p>
+            )}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="rounded-2xl bg-gradient-to-br from-[#D4B8FF]/20 to-card p-5 ring-1 ring-border">
+          <p className="text-xs font-medium text-muted-foreground mb-3">Quick Actions</p>
+          <div className="grid grid-cols-2 gap-2">
+            <Link
+              to="/dashboard/scanner"
+              className="flex flex-col items-center gap-1.5 rounded-xl bg-surface p-3 text-center transition hover:bg-surface-hover"
+            >
+              <CreditCard className="h-5 w-5 text-[#C8F7C5]" />
+              <span className="text-[11px] font-medium text-foreground">Scan Receipt</span>
+            </Link>
+            <Link
+              to="/dashboard/goals"
+              className="flex flex-col items-center gap-1.5 rounded-xl bg-surface p-3 text-center transition hover:bg-surface-hover"
+            >
+              <Target className="h-5 w-5 text-[#FFF3B0]" />
+              <span className="text-[11px] font-medium text-foreground">New Goal</span>
+            </Link>
+            <Link
+              to="/dashboard/export"
+              className="flex flex-col items-center gap-1.5 rounded-xl bg-surface p-3 text-center transition hover:bg-surface-hover"
+            >
+              <ArrowRight className="h-5 w-5 text-[#D4B8FF]" />
+              <span className="text-[11px] font-medium text-foreground">Export</span>
+            </Link>
+            <Link
+              to="/dashboard/assistant"
+              className="flex flex-col items-center gap-1.5 rounded-xl bg-surface p-3 text-center transition hover:bg-surface-hover"
+            >
+              <Brain className="h-5 w-5 text-violet-bright" />
+              <span className="text-[11px] font-medium text-foreground">AI Help</span>
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-/* Streak Heatmap */
+/* ─── Streak Heatmap ─── */
 function StreakHeatmap({ streaks }: { streaks: Record<string, unknown>[] }) {
   const today = new Date();
   const weeks = 20;
@@ -270,10 +459,10 @@ function StreakHeatmap({ streaks }: { streaks: Record<string, unknown>[] }) {
 
   function getColor(count: number) {
     if (count === 0) return "bg-surface";
-    if (count <= 1) return "bg-violet-bright/25";
-    if (count <= 3) return "bg-violet-bright/50";
-    if (count <= 5) return "bg-violet-bright/75";
-    return "bg-violet-bright";
+    if (count <= 1) return "bg-[#D4B8FF]/25";
+    if (count <= 3) return "bg-[#D4B8FF]/50";
+    if (count <= 5) return "bg-[#D4B8FF]/75";
+    return "bg-[#D4B8FF]";
   }
 
   const dayLabels = ["", "Mon", "", "Wed", "", "Fri", ""];
@@ -291,7 +480,7 @@ function StreakHeatmap({ streaks }: { streaks: Record<string, unknown>[] }) {
             {week.map((day) => (
               <div
                 key={day.date}
-                className={`h-[14px] w-[14px] rounded-[3px] transition-all duration-300 hover:scale-150 hover:ring-1 hover:ring-violet-bright/50 ${getColor(day.count)}`}
+                className={`h-[14px] w-[14px] rounded-[3px] transition-all duration-300 hover:scale-150 hover:ring-1 hover:ring-[#D4B8FF]/50 ${getColor(day.count)}`}
                 title={`${day.date}: ${day.count} action${day.count !== 1 ? "s" : ""}`}
               />
             ))}
@@ -301,14 +490,22 @@ function StreakHeatmap({ streaks }: { streaks: Record<string, unknown>[] }) {
       <div className="mt-3 flex items-center gap-1 text-[10px] text-muted-foreground">
         <span>Less</span>
         <div className="h-[10px] w-[10px] rounded-[2px] bg-surface" />
-        <div className="h-[10px] w-[10px] rounded-[2px] bg-violet-bright/25" />
-        <div className="h-[10px] w-[10px] rounded-[2px] bg-violet-bright/50" />
-        <div className="h-[10px] w-[10px] rounded-[2px] bg-violet-bright/75" />
-        <div className="h-[10px] w-[10px] rounded-[2px] bg-violet-bright" />
+        <div className="h-[10px] w-[10px] rounded-[2px] bg-[#D4B8FF]/25" />
+        <div className="h-[10px] w-[10px] rounded-[2px] bg-[#D4B8FF]/50" />
+        <div className="h-[10px] w-[10px] rounded-[2px] bg-[#D4B8FF]/75" />
+        <div className="h-[10px] w-[10px] rounded-[2px] bg-[#D4B8FF]" />
         <span>More</span>
       </div>
     </div>
   );
+}
+
+/* ─── Helpers ─── */
+function getDateRange() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+  const opts: Intl.DateTimeFormatOptions = { month: "short", day: "numeric", year: "numeric" };
+  return `${start.toLocaleDateString("en-US", opts)} - ${now.toLocaleDateString("en-US", opts)}`;
 }
 
 function getMonthlyData(transactions: Record<string, unknown>[]) {
