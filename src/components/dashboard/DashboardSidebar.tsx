@@ -313,10 +313,48 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative grid h-9 w-9 place-items-center rounded-xl bg-surface text-muted-foreground transition hover:bg-surface-hover hover:text-foreground">
-              <Bell className="h-[18px] w-[18px]" />
-              <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-violet-bright ring-2 ring-card" />
-            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="relative grid h-9 w-9 place-items-center rounded-xl bg-surface text-muted-foreground transition hover:bg-surface-hover hover:text-foreground">
+                  <Bell className="h-[18px] w-[18px]" />
+                  {notifications.length > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-violet-bright text-[9px] font-bold text-white ring-2 ring-card">
+                      {notifications.length}
+                    </span>
+                  )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-96 p-0 border-border bg-card shadow-2xl">
+                <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-violet-bright" />
+                    <span className="text-sm font-semibold text-foreground">Smart Notifications</span>
+                  </div>
+                  <span className="rounded-full bg-violet-bright/15 px-2 py-0.5 text-[10px] font-medium text-violet-bright">AI-Powered</span>
+                </div>
+                <ScrollArea className="max-h-[420px]">
+                  <div className="flex flex-col gap-1 p-2">
+                    {notifications.map((n) => (
+                      <div key={n.id} className="flex gap-3 rounded-xl p-3 transition hover:bg-surface">
+                        <div className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg ${n.color}`}>
+                          <n.icon className="h-4 w-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs font-semibold text-foreground">{n.title}</p>
+                            <span className="text-[10px] text-muted-foreground">{n.time}</span>
+                          </div>
+                          <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{n.body}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {notifications.length === 0 && (
+                      <p className="py-8 text-center text-xs text-muted-foreground">No notifications yet — keep using Monique!</p>
+                    )}
+                  </div>
+                </ScrollArea>
+              </PopoverContent>
+            </Popover>
             <Link to="/dashboard/settings" className="flex items-center gap-3 rounded-xl px-3 py-1.5 transition hover:bg-surface">
               <div className="text-right">
                 <p className="text-sm font-medium text-foreground">{profile?.full_name || "User"}</p>
