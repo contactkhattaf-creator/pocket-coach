@@ -476,7 +476,7 @@ function DashboardOverview() {
                 <p className="text-xs font-medium text-muted-foreground mb-2">Earned Badges</p>
                 <div className="flex flex-wrap gap-2">
                   {(profile.badges as string[]).map((badge, i) => (
-                    <span key={i} className="rounded-full bg-[#D4B8FF]/15 px-3 py-1 text-xs font-semibold text-[#D4B8FF]">{badge}</span>
+                    <span key={i} className="rounded-full bg-[#D4B8FF]/15 px-3 py-1 text-xs font-semibold text-[#D4B8FF]">{String(badge)}</span>
                   ))}
                 </div>
               </div>
