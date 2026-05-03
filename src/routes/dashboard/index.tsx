@@ -471,16 +471,20 @@ function DashboardOverview() {
                 </div>
               ))}
             </div>
-            {profile?.badges && Array.isArray(profile.badges) && (profile.badges as string[]).length > 0 && (
-              <div className="mt-6">
-                <p className="text-xs font-medium text-muted-foreground mb-2">Earned Badges</p>
-                <div className="flex flex-wrap gap-2">
-                  {(profile.badges as string[]).map((badge, i) => (
-                    <span key={i} className="rounded-full bg-[#D4B8FF]/15 px-3 py-1 text-xs font-semibold text-[#D4B8FF]">{String(badge)}</span>
-                  ))}
+            {(() => {
+              const badges = Array.isArray(profile?.badges) ? (profile.badges as string[]) : [];
+              if (badges.length === 0) return null;
+              return (
+                <div className="mt-6">
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Earned Badges</p>
+                  <div className="flex flex-wrap gap-2">
+                    {badges.map((badge, i) => (
+                      <span key={i} className="rounded-full bg-[#D4B8FF]/15 px-3 py-1 text-xs font-semibold text-[#D4B8FF]">{String(badge)}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
             <Link to="/dashboard/profile" onClick={() => setScoreModal(false)} className="mt-4 block w-full rounded-xl bg-[#D4B8FF] py-2.5 text-center text-sm font-semibold text-[#1a1a2e] transition hover:bg-[#c4a0ff]">
               View Full Profile
             </Link>
