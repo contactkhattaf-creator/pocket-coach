@@ -471,7 +471,7 @@ function DashboardOverview() {
                 </div>
               ))}
             </div>
-            {profile?.badges && (profile.badges as string[]).length > 0 && (
+            {profile?.badges && Array.isArray(profile.badges) && (profile.badges as string[]).length > 0 && (
               <div className="mt-6">
                 <p className="text-xs font-medium text-muted-foreground mb-2">Earned Badges</p>
                 <div className="flex flex-wrap gap-2">

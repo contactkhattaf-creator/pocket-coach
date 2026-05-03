@@ -92,7 +92,7 @@ function TransactionsPage() {
         </div>
         <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)} className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none">
           <option value="">All Categories</option>
-          {categories.map((c) => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+          {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
         <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none">
           <option value="">All Types</option>
@@ -123,7 +123,7 @@ function TransactionsPage() {
                   <td className="px-5 py-3">
                     {cat ? (
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs font-medium" style={{ borderLeft: `3px solid ${cat.color || "#7C3AED"}` }}>
-                        {cat.icon} {cat.name}
+                        <span className="h-2 w-2 rounded-full shrink-0" style={{ background: cat.color || "#7C3AED" }} /> {cat.name}
                       </span>
                     ) : <span className="text-muted-foreground">—</span>}
                   </td>
@@ -165,7 +165,7 @@ function TransactionsPage() {
                 <label className="mb-1 block text-xs font-medium text-muted-foreground">Category</label>
                 <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none">
                   <option value="">Select category</option>
-                  {categories.map((c) => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+                  {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
               <div>
