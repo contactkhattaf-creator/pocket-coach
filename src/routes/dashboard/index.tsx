@@ -311,9 +311,9 @@ function DashboardOverview() {
                 </p>
               </div>
             </div>
-            {profile.financial_profile_type && (
+            {typeof profile.financial_profile_type === "string" && profile.financial_profile_type && (
               <p className="mt-3 rounded-lg bg-[#D4B8FF]/10 px-3 py-1.5 text-center text-xs font-semibold capitalize text-[#D4B8FF]">
-                {String(profile.financial_profile_type).replace(/_/g, " ")}
+                {profile.financial_profile_type.replace(/_/g, " ")}
               </p>
             )}
           </Link>
