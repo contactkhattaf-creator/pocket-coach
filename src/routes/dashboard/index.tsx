@@ -100,16 +100,18 @@ function DashboardOverview() {
   const [profile, setProfile] = useState<Record<string, unknown> | null>(null);
   const [detailModal, setDetailModal] = useState<string | null>(null);
   const [scoreModal, setScoreModal] = useState(false);
+  const [friendsUpdates, setFriendsUpdates] = useState<{ id: string; full_name: string | null; avatar_url: string | null; fds_score: number; badges: string[] }[]>([]);
 
   const loadData = useCallback(async () => {
     if (!user) return;
-    const [txRes, catRes, billRes, goalRes, streakRes, profRes] = await Promise.all([
+    const [txRes, catRes, billRes, goalRes, streakRes, profRes, followRes] = await Promise.all([
       supabase.from("transactions").select("*").eq("user_id", user.id).order("date", { ascending: false }).limit(100),
       supabase.from("categories").select("*"),
       supabase.from("bills").select("*").eq("user_id", user.id).eq("is_paid", false).order("due_date", { ascending: true }).limit(5),
       supabase.from("goals").select("*").eq("user_id", user.id).limit(10),
       supabase.from("streaks").select("*").eq("user_id", user.id).order("date", { ascending: false }).limit(365),
       supabase.from("profiles").select("*").eq("id", user.id).single(),
+      supabase.from("user_follows").select("following_id").eq("follower_id", user.id),
     ]);
     if (txRes.data) setTransactions(txRes.data);
     if (catRes.data) setCategories(catRes.data);
@@ -117,6 +119,15 @@ function DashboardOverview() {
     if (goalRes.data) setGoals(goalRes.data);
     if (streakRes.data) setStreaks(streakRes.data);
     if (profRes.data) setProfile(profRes.data);
+
+    // Load friends profiles
+    if (followRes.data && followRes.data.length > 0) {
+      const friendIds = followRes.data.map(f => (f as Record<string, string>).following_id);
+      const { data: friendProfiles } = await supabase.from("profiles").select("id, full_name, avatar_url, fds_score, badges").in("id", friendIds).order("fds_score", { ascending: false }).limit(5);
+      if (friendProfiles) {
+        setFriendsUpdates(friendProfiles.map(p => ({ ...p, fds_score: p.fds_score || 0, badges: (p.badges as string[]) || [] })) as { id: string; full_name: string | null; avatar_url: string | null; fds_score: number; badges: string[] }[]);
+      }
+    }
   }, [user]);
 
   useEffect(() => { loadData(); }, [loadData]);
