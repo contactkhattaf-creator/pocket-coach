@@ -58,24 +58,43 @@ function SocialPage() {
   const [tab, setTab] = useState<"leaderboard" | "following" | "feed">("leaderboard");
   const [animatingFollow, setAnimatingFollow] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   const inviteLink = typeof window !== "undefined" ? `${window.location.origin}/register?ref=${user?.id?.slice(0, 8) || ""}` : "";
 
+  async function copyToClipboard() {
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      setCopied(true);
+      toast.success("Link copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy link. Please copy it manually.");
+    }
+  }
+
   async function handleInvite() {
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
+    setSharing(true);
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
         await navigator.share({
           title: "Join me on Monique",
           text: "Track your finances, earn badges, and compete with friends on Monique!",
           url: inviteLink,
         });
+        toast.success("Invite shared!");
         return;
-      } catch { /* user cancelled */ }
+      }
+      await copyToClipboard();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "";
+      if (!msg.includes("abort") && !msg.includes("cancel")) {
+        toast.error("Sharing failed. The link has been copied instead.");
+        try { await navigator.clipboard.writeText(inviteLink); } catch { /* ignore */ }
+      }
+    } finally {
+      setSharing(false);
     }
-    // Fallback: copy to clipboard
-    await navigator.clipboard.writeText(inviteLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   }
 
   const loadData = useCallback(async () => {
