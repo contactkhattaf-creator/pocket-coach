@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { MoniqLogo } from "@/components/MoniqLogo";
+import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 
 export function Header() {
   return (
@@ -15,7 +16,10 @@ export function Header() {
           <a href="#ai" className="hover:text-ink">AI</a>
           <a href="#faq" className="hover:text-ink">FAQ</a>
         </nav>
-        <Link to="/login" className="pill-btn text-xs">Sign in</Link>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <Link to="/login" className="pill-btn text-xs">Sign in</Link>
+        </div>
       </div>
     </header>
   );
