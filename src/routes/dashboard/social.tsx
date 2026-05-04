@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useDashboard } from "@/routes/dashboard";
 import {
@@ -57,24 +58,43 @@ function SocialPage() {
   const [tab, setTab] = useState<"leaderboard" | "following" | "feed">("leaderboard");
   const [animatingFollow, setAnimatingFollow] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   const inviteLink = typeof window !== "undefined" ? `${window.location.origin}/register?ref=${user?.id?.slice(0, 8) || ""}` : "";
 
+  async function copyToClipboard() {
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      setCopied(true);
+      toast.success("Link copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy link. Please copy it manually.");
+    }
+  }
+
   async function handleInvite() {
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
+    setSharing(true);
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
         await navigator.share({
           title: "Join me on Monique",
           text: "Track your finances, earn badges, and compete with friends on Monique!",
           url: inviteLink,
         });
+        toast.success("Invite shared!");
         return;
-      } catch { /* user cancelled */ }
+      }
+      await copyToClipboard();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "";
+      if (!msg.includes("abort") && !msg.includes("cancel")) {
+        toast.error("Sharing failed. The link has been copied instead.");
+        try { await navigator.clipboard.writeText(inviteLink); } catch { /* ignore */ }
+      }
+    } finally {
+      setSharing(false);
     }
-    // Fallback: copy to clipboard
-    await navigator.clipboard.writeText(inviteLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   }
 
   const loadData = useCallback(async () => {
@@ -198,7 +218,7 @@ function SocialPage() {
             <div className="flex items-center gap-2 rounded-xl bg-surface px-3 py-2 ring-1 ring-border">
               <span className="text-xs text-muted-foreground truncate max-w-[180px]">{inviteLink}</span>
               <button
-                onClick={() => { navigator.clipboard.writeText(inviteLink); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+                onClick={copyToClipboard}
                 className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-surface-hover text-muted-foreground transition hover:text-foreground"
               >
                 {copied ? <Check className="h-3.5 w-3.5 text-[#C8F7C5]" /> : <Copy className="h-3.5 w-3.5" />}
@@ -206,10 +226,15 @@ function SocialPage() {
             </div>
             <button
               onClick={handleInvite}
-              className="flex items-center gap-2 rounded-xl bg-violet-bright px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-bright/80"
+              disabled={sharing}
+              className="flex items-center gap-2 rounded-xl bg-violet-bright px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-bright/80 disabled:opacity-60"
             >
-              <Share2 className="h-4 w-4" />
-              Share
+              {sharing ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+              ) : (
+                <Share2 className="h-4 w-4" />
+              )}
+              {sharing ? "Sharing..." : "Share"}
             </button>
           </div>
         </div>
