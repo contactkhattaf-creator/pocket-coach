@@ -55,6 +55,7 @@ function SocialPage() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<"leaderboard" | "following" | "feed">("leaderboard");
+  const [animatingFollow, setAnimatingFollow] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const inviteLink = typeof window !== "undefined" ? `${window.location.origin}/register?ref=${user?.id?.slice(0, 8) || ""}` : "";
