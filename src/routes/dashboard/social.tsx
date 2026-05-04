@@ -15,6 +15,10 @@ import {
   Sparkles,
   Shield,
   Activity,
+  Share2,
+  Copy,
+  Check,
+  Gift,
 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/social")({
