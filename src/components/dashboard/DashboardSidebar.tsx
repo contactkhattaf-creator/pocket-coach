@@ -2,6 +2,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
 import { MoniqLogo } from "@/components/MoniqLogo";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   LayoutDashboard,
@@ -30,6 +31,7 @@ import {
   PiggyBank,
   Sparkles,
   Receipt,
+  Users,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -148,6 +150,7 @@ const navItems = [
   { label: "Micro-Objectives", icon: Crosshair, to: "/dashboard/micro-objectives" as const },
   { label: "Challenges", icon: Trophy, to: "/dashboard/challenges" as const },
   { label: "Financial Profile", icon: Brain, to: "/dashboard/profile" as const },
+  { label: "Social Hub", icon: Users, to: "/dashboard/social" as const },
   { label: "Investments", icon: TrendingUp, to: "/dashboard/investments" as const },
   { label: "Subscriptions", icon: CreditCard, to: "/dashboard/subscriptions" as const },
   { label: "Bills", icon: FileText, to: "/dashboard/bills" as const },
@@ -312,7 +315,8 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
               />
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Popover>
               <PopoverTrigger asChild>
                 <button className="relative grid h-9 w-9 place-items-center rounded-xl bg-surface text-muted-foreground transition hover:bg-surface-hover hover:text-foreground">

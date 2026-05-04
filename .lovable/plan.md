@@ -1,54 +1,62 @@
 
-# Moniq Complete Rebuild Plan
+## Plan: Social System + UI Improvements
 
-This is a large-scale rebuild covering design, database, and 10+ feature pages. I'll implement it in phases across multiple messages.
+### 1. Database: Social Tables
+Create migration for:
+- **user_follows** — follower/following relationships (follower_id, following_id, created_at) with RLS
+- **user_likes** — likes on profiles/content (user_id, target_user_id, created_at) with RLS
+- **activity_feed** — feed entries (user_id, action_type, target_user_id, metadata, created_at) with RLS
 
-## Phase 1 — Foundation (this message)
-- **Dark theme design system** inspired by the Hynex screenshot: dark backgrounds, card-based layout, violet accents
-- **New logo** using the symbol icon from the uploaded branding sheet
-- **Updated registration form** with personal info (full name, age, phone) and financial info (salary, salary frequency, currency)
-- **Sidebar layout** with all 9 navigation items: Dashboard, Transactions, Budget, Goals, Investments, Subscriptions, Bills, AI Assistant, Settings
-- **Database migrations** for new tables: budgets, goals, investments, subscriptions, bills, streaks
+Profiles table already has badges, fds_score, avatar_url, full_name, bio — sufficient for social profiles.
 
-## Phase 2 — Core Pages
-- **Dashboard** redesign: net worth hero card, spending vs income bar chart (Recharts), quick stats row, recent transactions, upcoming bills widget
-- **Transactions** page: full table with search/filter, add/edit/delete modal, color-coded category chips
-- **Budget** page: category progress bars, remaining vs spent, donut chart
+### 2. Social Route: `/dashboard/social`
+New page with:
+- **Leaderboard** — top users by FDS score (public profiles)
+- **Follow/unfollow** buttons with smooth animations
+- **User cards** showing avatar, name, FDS score, badges, follower count
+- **Activity feed** showing followed users' achievements
+- **Search users** functionality
 
-## Phase 3 — Feature Pages
-- **Goals**: goal cards with circular SVG progress rings, milestone celebration
-- **Streak Calendar**: GitHub-style heatmap, streak counter, hover tooltips
-- **Investments**: portfolio overview, holdings table with sparklines, allocation donut
+### 3. Friends Updates Card on Dashboard
+Add a card in the dashboard right sidebar showing:
+- Recent activity from followed users (score changes, new badges)
+- Styled like the reference image with modern bento-grid cards
 
-## Phase 4 — Advanced Features
-- **Subscriptions Tracker**: recurring list, monthly total, cancel risk badges
-- **Bills**: upcoming bills list, negotiation CTA modals
-- **AI Assistant**: slide-in chat panel with typewriter animation, suggested prompts
-- **Receipt Scanner**: camera/upload interface to extract transaction data
-- **Settings**: profile editing, preferences
-- **PDF/CSV Export**: monthly summary export
-- **SMS Import**: paste SMS to auto-create transactions
+### 4. Font Change
+Replace `Fraunces` with `Nunito Sans` (clean geometric, Avenir-like) for the display font across the app.
 
-## Database Changes (Phase 1)
-New tables needed:
-- `budgets` — user_id, category_id, amount, month, year
-- `goals` — user_id, name, target_amount, current_amount, deadline, icon
-- `investments` — user_id, asset_name, ticker, shares, avg_price, asset_class
-- `subscriptions` — user_id, name, amount, billing_cycle, next_date, is_active
-- `bills` — user_id, name, amount, due_date, category, is_negotiable
-- `streaks` — user_id, date, action_count
-- Update `profiles` to add age, phone, salary, salary_frequency
+### 5. Landing Page Social Section
+Add a new section between Features and Showcase highlighting:
+- "Connect & Compete" — follow friends, leaderboard, badges
+- Bento-grid layout inspired by the uploaded reference image
+- Neon-green accent card + dark cards with icons
 
-## Design Direction
-- **Dark mode** primary (deep navy/charcoal like the Hynex screenshot)
-- **Violet accent** (#7C3AED range) for highlights, badges, active states
-- **Card-based layout** with subtle borders and glassmorphism
-- **Green for positive** values, **red for negative**
-- Rounded corners, smooth transitions
-- Collapsible sidebar with icon-only mode
+### 6. Dark/Light Mode Toggle
+- Add light mode CSS variables in `:root` with `.dark` variant
+- Add toggle button in dashboard header and landing page
+- Store preference in localStorage
+- Light mode: white/gray backgrounds, dark text
+- Dark mode: current dark violet theme (default)
 
-## Tech Stack Additions
-- `recharts` for charts (bar, line, donut, sparklines)
-- GSAP kept for animations
+### Technical Details
 
-I'll start with Phase 1 now and continue in subsequent messages. Ready to proceed?
+**Migration SQL:**
+```sql
+CREATE TABLE user_follows (follower_id uuid, following_id uuid, created_at timestamptz)
+CREATE TABLE activity_feed (user_id uuid, action text, metadata jsonb, created_at timestamptz)
+```
+With RLS policies for authenticated users.
+
+**New files:**
+- `src/routes/dashboard/social.tsx` — social/leaderboard page
+- `src/components/dashboard/ThemeToggle.tsx` — dark/light toggle
+
+**Modified files:**
+- `src/styles.css` — light mode variables, font change
+- `src/routes/__root.tsx` — font link update
+- `src/routes/index.tsx` — add social section on landing
+- `src/routes/dashboard/index.tsx` — friends updates card
+- `src/components/dashboard/DashboardSidebar.tsx` — add social nav item + theme toggle
+- `src/components/landing/Header.tsx` — theme toggle on landing
+
+**RLS:** Users can follow/unfollow freely. Activity feed visible to followers. Profiles SELECT open to all authenticated users for leaderboard.

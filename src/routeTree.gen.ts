@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTransactionsRouteImport } from './routes/dashboard/transactions'
 import { Route as DashboardSubscriptionsRouteImport } from './routes/dashboard/subscriptions'
+import { Route as DashboardSocialRouteImport } from './routes/dashboard/social'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
 import { Route as DashboardScannerRouteImport } from './routes/dashboard/scanner'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
@@ -61,6 +62,11 @@ const DashboardTransactionsRoute = DashboardTransactionsRouteImport.update({
 const DashboardSubscriptionsRoute = DashboardSubscriptionsRouteImport.update({
   id: '/subscriptions',
   path: '/subscriptions',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSocialRoute = DashboardSocialRouteImport.update({
+  id: '/social',
+  path: '/social',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/scanner': typeof DashboardScannerRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/social': typeof DashboardSocialRoute
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -155,6 +162,7 @@ export interface FileRoutesByTo {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/scanner': typeof DashboardScannerRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/social': typeof DashboardSocialRoute
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/scanner': typeof DashboardScannerRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/social': typeof DashboardSocialRoute
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/transactions': typeof DashboardTransactionsRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/scanner'
     | '/dashboard/settings'
+    | '/dashboard/social'
     | '/dashboard/subscriptions'
     | '/dashboard/transactions'
     | '/dashboard/'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/scanner'
     | '/dashboard/settings'
+    | '/dashboard/social'
     | '/dashboard/subscriptions'
     | '/dashboard/transactions'
     | '/dashboard'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/scanner'
     | '/dashboard/settings'
+    | '/dashboard/social'
     | '/dashboard/subscriptions'
     | '/dashboard/transactions'
     | '/dashboard/'
@@ -298,6 +310,13 @@ declare module '@tanstack/react-router' {
       path: '/subscriptions'
       fullPath: '/dashboard/subscriptions'
       preLoaderRoute: typeof DashboardSubscriptionsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/social': {
+      id: '/dashboard/social'
+      path: '/social'
+      fullPath: '/dashboard/social'
+      preLoaderRoute: typeof DashboardSocialRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/settings': {
@@ -392,6 +411,7 @@ interface DashboardRouteChildren {
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardScannerRoute: typeof DashboardScannerRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardSocialRoute: typeof DashboardSocialRoute
   DashboardSubscriptionsRoute: typeof DashboardSubscriptionsRoute
   DashboardTransactionsRoute: typeof DashboardTransactionsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -409,6 +429,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardScannerRoute: DashboardScannerRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardSocialRoute: DashboardSocialRoute,
   DashboardSubscriptionsRoute: DashboardSubscriptionsRoute,
   DashboardTransactionsRoute: DashboardTransactionsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
