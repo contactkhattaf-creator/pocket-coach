@@ -218,7 +218,7 @@ function SocialPage() {
             <div className="flex items-center gap-2 rounded-xl bg-surface px-3 py-2 ring-1 ring-border">
               <span className="text-xs text-muted-foreground truncate max-w-[180px]">{inviteLink}</span>
               <button
-                onClick={() => { navigator.clipboard.writeText(inviteLink); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+                onClick={copyToClipboard}
                 className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-surface-hover text-muted-foreground transition hover:text-foreground"
               >
                 {copied ? <Check className="h-3.5 w-3.5 text-[#C8F7C5]" /> : <Copy className="h-3.5 w-3.5" />}
@@ -226,10 +226,15 @@ function SocialPage() {
             </div>
             <button
               onClick={handleInvite}
-              className="flex items-center gap-2 rounded-xl bg-violet-bright px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-bright/80"
+              disabled={sharing}
+              className="flex items-center gap-2 rounded-xl bg-violet-bright px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-bright/80 disabled:opacity-60"
             >
-              <Share2 className="h-4 w-4" />
-              Share
+              {sharing ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+              ) : (
+                <Share2 className="h-4 w-4" />
+              )}
+              {sharing ? "Sharing..." : "Share"}
             </button>
           </div>
         </div>
