@@ -182,6 +182,39 @@ function SocialPage() {
         ))}
       </div>
 
+      {/* Invite Friends */}
+      <div className="mb-6 rounded-2xl bg-gradient-to-r from-violet-bright/20 via-card to-[#C8F7C5]/10 p-5 ring-1 ring-violet-bright/20">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-violet-bright/20">
+              <Gift className="h-6 w-6 text-violet-bright" />
+            </div>
+            <div>
+              <h3 className="font-display text-lg font-bold text-foreground">Invite Your Friends</h3>
+              <p className="text-sm text-muted-foreground">Share Monique and grow your circle. Compete together!</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-xl bg-surface px-3 py-2 ring-1 ring-border">
+              <span className="text-xs text-muted-foreground truncate max-w-[180px]">{inviteLink}</span>
+              <button
+                onClick={() => { navigator.clipboard.writeText(inviteLink); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-surface-hover text-muted-foreground transition hover:text-foreground"
+              >
+                {copied ? <Check className="h-3.5 w-3.5 text-[#C8F7C5]" /> : <Copy className="h-3.5 w-3.5" />}
+              </button>
+            </div>
+            <button
+              onClick={handleInvite}
+              className="flex items-center gap-2 rounded-xl bg-violet-bright px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-bright/80"
+            >
+              <Share2 className="h-4 w-4" />
+              Share
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Search + Tabs */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-sm">
