@@ -20,6 +20,9 @@ import {
   Shield,
   Lightbulb,
   AlertTriangle,
+  Users,
+  Star,
+  Award,
 } from "lucide-react";
 import {
   XAxis,
