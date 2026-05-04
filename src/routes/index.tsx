@@ -50,6 +50,7 @@ function Index() {
       <Problem />
       <Solution />
       <Features />
+      <SocialSection />
       <Showcase />
       <HowItWorks />
       <AIDifferentiator />
