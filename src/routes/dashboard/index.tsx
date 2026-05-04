@@ -327,6 +327,41 @@ function DashboardOverview() {
           </div>
         </div>
 
+        {/* Friends Updates */}
+        {friendsUpdates.length > 0 && (
+          <div className="rounded-2xl bg-gradient-to-br from-[#06B6D4]/10 via-card to-[#FFD700]/5 p-5 ring-1 ring-border">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="grid h-7 w-7 place-items-center rounded-lg bg-[#06B6D4]/20"><Users className="h-4 w-4 text-[#06B6D4]" /></div>
+                <h2 className="text-sm font-bold text-foreground">Friends Updates</h2>
+              </div>
+              <Link to="/dashboard/social" className="text-xs text-violet-bright hover:underline">View all</Link>
+            </div>
+            <div className="space-y-2.5">
+              {friendsUpdates.map(friend => (
+                <div key={friend.id} className="flex items-center gap-3 rounded-xl bg-surface/50 p-3 transition hover:bg-surface">
+                  <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-violet-bright/15 ring-1 ring-violet-bright/30">
+                    {friend.avatar_url ? (
+                      <img src={friend.avatar_url} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      <span className="text-[10px] font-bold text-violet-bright">
+                        {friend.full_name ? friend.full_name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2) : "?"}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-foreground truncate">{friend.full_name || "User"}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="flex items-center gap-1 text-[10px] text-muted-foreground"><Star className="h-3 w-3 text-[#FFD700]" />{friend.fds_score}</span>
+                      {friend.badges.length > 0 && <span className="flex items-center gap-1 text-[10px] text-muted-foreground"><Award className="h-3 w-3 text-[#D4B8FF]" />{friend.badges.length}</span>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Recent Transactions */}
         <div className="rounded-2xl bg-card p-5 ring-1 ring-border">
           <div className="mb-4 flex items-center justify-between">
