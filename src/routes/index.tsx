@@ -208,6 +208,92 @@ function Index() {
     );
   }
 
+  function SocialSection() {
+    return (
+      <section className="py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="reveal mx-auto max-w-3xl text-center mb-14">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-violet-bright">Connect & Compete</p>
+            <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-6xl">
+              Finance is better <span className="text-violet-bright">together.</span>
+            </h2>
+            <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+              Follow friends, climb the leaderboard, earn badges, and build financial discipline as a community.
+            </p>
+          </div>
+
+          {/* Bento Grid */}
+          <div className="reveal-stagger grid gap-4 md:grid-cols-3 auto-rows-[220px]">
+            {/* Big neon card */}
+            <div className="group relative row-span-2 overflow-hidden rounded-3xl p-8 flex flex-col justify-end transition-transform duration-300 hover:-translate-y-1"
+                 style={{ background: "linear-gradient(135deg, #BFFF00 0%, #90EE90 100%)" }}>
+              <h3 className="font-display text-3xl font-bold text-[#1a2e1a] leading-tight">Social<br/>Leaderboard</h3>
+              <p className="mt-2 text-sm text-[#2d4a2d]/80">Compete with friends and see who has the highest Financial Discipline Score.</p>
+            </div>
+
+            {/* Follow friends */}
+            <div className="rounded-3xl bg-card p-6 ring-1 ring-border flex flex-col items-center justify-center text-center transition-transform duration-300 hover:-translate-y-1">
+              <div className="flex -space-x-3 mb-4">
+                {["#FF6B6B", "#4ECDC4", "#45B7D1"].map((c, i) => (
+                  <div key={i} className="h-12 w-12 rounded-full ring-2 ring-card" style={{ background: c }} />
+                ))}
+              </div>
+              <h3 className="font-display text-xl font-bold text-foreground">Follow Friends</h3>
+              <p className="mt-1 text-sm text-muted-foreground">Build your network and track each other's progress</p>
+            </div>
+
+            {/* Score tracking */}
+            <div className="rounded-3xl bg-card p-6 ring-1 ring-border flex flex-col justify-between transition-transform duration-300 hover:-translate-y-1">
+              <p className="text-xs font-semibold uppercase tracking-wider text-violet-bright">FDS Rankings</p>
+              <div className="flex items-end gap-1 mt-2">
+                {[45, 62, 78, 55, 88, 72, 91, 68, 85, 95].map((h, i) => (
+                  <div key={i} className="flex-1 rounded-sm transition-all duration-500" style={{ height: `${h}%`, background: `oklch(0.58 0.22 ${280 + i * 8})` }} />
+                ))}
+              </div>
+              <div>
+                <h3 className="font-display text-xl font-bold text-foreground mt-3">Track Progress</h3>
+                <p className="text-xs text-muted-foreground">Real-time score updates from your circle</p>
+              </div>
+            </div>
+
+            {/* Badges */}
+            <div className="rounded-3xl bg-card p-6 ring-1 ring-border flex flex-col justify-center transition-transform duration-300 hover:-translate-y-1">
+              <div className="flex gap-3 mb-3">
+                {["🏆", "⭐", "🔥", "💎", "👑"].map((e, i) => (
+                  <div key={i} className="grid h-10 w-10 place-items-center rounded-xl bg-surface text-lg">{e}</div>
+                ))}
+              </div>
+              <h3 className="font-display text-xl font-bold text-foreground">Earn Badges</h3>
+              <p className="text-xs text-muted-foreground">Unlock achievements as you build better habits</p>
+            </div>
+
+            {/* Activity feed */}
+            <div className="rounded-3xl bg-card p-6 ring-1 ring-border flex flex-col justify-center transition-transform duration-300 hover:-translate-y-1">
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center gap-2 rounded-lg bg-surface p-2">
+                  <div className="h-6 w-6 rounded-full bg-[#C8F7C5]" />
+                  <div className="flex-1">
+                    <div className="h-2 w-20 rounded bg-muted" />
+                    <div className="h-1.5 w-32 rounded bg-muted/50 mt-1" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 rounded-lg bg-surface p-2">
+                  <div className="h-6 w-6 rounded-full bg-[#D4B8FF]" />
+                  <div className="flex-1">
+                    <div className="h-2 w-24 rounded bg-muted" />
+                    <div className="h-1.5 w-28 rounded bg-muted/50 mt-1" />
+                  </div>
+                </div>
+              </div>
+              <h3 className="font-display text-xl font-bold text-foreground">Activity Feed</h3>
+              <p className="text-xs text-muted-foreground">See what your friends are achieving</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   function Showcase() {
     return (
       <section className="px-6 py-16 sm:py-24">
