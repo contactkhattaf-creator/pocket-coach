@@ -151,6 +151,7 @@ const navItems = [
   { label: "Challenges", icon: Trophy, to: "/dashboard/challenges" as const },
   { label: "Financial Profile", icon: Brain, to: "/dashboard/profile" as const },
   { label: "Social Hub", icon: Users, to: "/dashboard/social" as const },
+  { label: "Investments", icon: TrendingUp, to: "/dashboard/investments" as const },
   { label: "Subscriptions", icon: CreditCard, to: "/dashboard/subscriptions" as const },
   { label: "Bills", icon: FileText, to: "/dashboard/bills" as const },
   { label: "Receipt Scanner", icon: ScanLine, to: "/dashboard/scanner" as const },
