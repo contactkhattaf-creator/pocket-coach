@@ -55,7 +55,26 @@ function SocialPage() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<"leaderboard" | "following" | "feed">("leaderboard");
-  const [animatingFollow, setAnimatingFollow] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const inviteLink = typeof window !== "undefined" ? `${window.location.origin}/register?ref=${user?.id?.slice(0, 8) || ""}` : "";
+
+  async function handleInvite() {
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({
+          title: "Join me on Monique",
+          text: "Track your finances, earn badges, and compete with friends on Monique!",
+          url: inviteLink,
+        });
+        return;
+      } catch { /* user cancelled */ }
+    }
+    // Fallback: copy to clipboard
+    await navigator.clipboard.writeText(inviteLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   const loadData = useCallback(async () => {
     if (!user) return;
