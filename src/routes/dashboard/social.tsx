@@ -59,6 +59,7 @@ function SocialPage() {
   const [animatingFollow, setAnimatingFollow] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [loadingProfiles, setLoadingProfiles] = useState(true);
 
   const inviteLink = typeof window !== "undefined" ? `${window.location.origin}/register?ref=${user?.id?.slice(0, 8) || ""}` : "";
 
