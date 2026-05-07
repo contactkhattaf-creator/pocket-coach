@@ -287,7 +287,7 @@ function SocialPage() {
       {/* Leaderboard */}
       {tab === "leaderboard" && (
         <div className="space-y-3">
-          {/* Top 3 podium */}
+          {/* Top 3 podium — only when we have 3+ users */}
           {leaderboard.length >= 3 && (
             <div className="mb-6 grid grid-cols-3 gap-4">
               {[1, 0, 2].map(idx => {
@@ -334,10 +334,12 @@ function SocialPage() {
             </div>
           )}
 
-          {/* Rest of leaderboard */}
-          {leaderboard.slice(3).map((p, i) => (
+          {/* User list — show all when < 3, show from index 3+ when podium is shown */}
+          {(leaderboard.length < 3 ? leaderboard : leaderboard.slice(3)).map((p, i) => {
+            const rank = leaderboard.length < 3 ? i : i + 3;
+            return (
             <div key={p.id} className="flex items-center gap-4 rounded-2xl bg-card p-4 ring-1 ring-border transition-all hover:ring-violet-bright/20">
-              <div className="w-8 text-center">{getRankIcon(i + 3)}</div>
+              <div className="w-8 text-center">{getRankIcon(rank)}</div>
               <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-violet-bright/15 ring-1 ring-border">
                 {p.avatar_url ? (
                   <img src={p.avatar_url} alt="" className="h-full w-full object-cover" />
@@ -366,7 +368,8 @@ function SocialPage() {
                 {isFollowing(p.id) ? <><UserMinus className="h-3.5 w-3.5" /> Unfollow</> : <><UserPlus className="h-3.5 w-3.5" /> Follow</>}
               </button>
             </div>
-          ))}
+            );
+          })}
           {loadingProfiles && leaderboard.length === 0 && (
             <div className="py-16 text-center">
               <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-violet-bright/30 border-t-violet-bright mb-3" />
