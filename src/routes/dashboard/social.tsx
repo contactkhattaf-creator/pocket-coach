@@ -59,6 +59,7 @@ function SocialPage() {
   const [animatingFollow, setAnimatingFollow] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [loadingProfiles, setLoadingProfiles] = useState(true);
 
   const inviteLink = typeof window !== "undefined" ? `${window.location.origin}/register?ref=${user?.id?.slice(0, 8) || ""}` : "";
 
@@ -98,19 +99,27 @@ function SocialPage() {
   }
 
   const loadData = useCallback(async () => {
-    if (!user) return;
-    const [profRes, followRes, actRes] = await Promise.all([
-      supabase.from("profiles").select("id, full_name, avatar_url, fds_score, badges, bio, financial_profile_type").order("fds_score", { ascending: false }).limit(50),
-      supabase.from("user_follows").select("follower_id, following_id"),
-      supabase.from("activity_feed").select("*").order("created_at", { ascending: false }).limit(50),
-    ]);
-    console.log("Social Hub loadData:", { profData: profRes.data?.length, profError: profRes.error, followError: followRes.error, actError: actRes.error, userId: user?.id });
-    if (profRes.error) { console.error("Profiles query error:", profRes.error); toast.error("Failed to load profiles"); }
-    if (followRes.error) { console.error("Follows query error:", followRes.error); }
-    if (actRes.error) { console.error("Activity query error:", actRes.error); }
-    if (profRes.data) setProfiles(profRes.data.map(p => ({ ...p, badges: (p.badges as string[]) || [], fds_score: p.fds_score || 0 })) as UserProfile[]);
-    if (followRes.data) setFollows(followRes.data as FollowRecord[]);
-    if (actRes.data) setActivities(actRes.data as ActivityItem[]);
+    if (!user) { console.warn("Social Hub: no user, skipping loadData"); return; }
+    setLoadingProfiles(true);
+    try {
+      const [profRes, followRes, actRes] = await Promise.all([
+        supabase.from("profiles").select("id, full_name, avatar_url, fds_score, badges, bio, financial_profile_type").order("fds_score", { ascending: false }).limit(50),
+        supabase.from("user_follows").select("follower_id, following_id"),
+        supabase.from("activity_feed").select("*").order("created_at", { ascending: false }).limit(50),
+      ]);
+      console.log("Social Hub loadData:", { profCount: profRes.data?.length, profError: profRes.error, userId: user?.id });
+      if (profRes.error) { console.error("Profiles query error:", profRes.error); toast.error("Failed to load profiles: " + profRes.error.message); }
+      if (followRes.error) { console.error("Follows query error:", followRes.error); }
+      if (actRes.error) { console.error("Activity query error:", actRes.error); }
+      if (profRes.data) setProfiles(profRes.data.map(p => ({ ...p, badges: (p.badges as string[]) || [], fds_score: p.fds_score || 0 })) as UserProfile[]);
+      if (followRes.data) setFollows(followRes.data as FollowRecord[]);
+      if (actRes.data) setActivities(actRes.data as ActivityItem[]);
+    } catch (err) {
+      console.error("Social Hub loadData crash:", err);
+      toast.error("Failed to load social data");
+    } finally {
+      setLoadingProfiles(false);
+    }
   }, [user]);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -252,8 +261,13 @@ function SocialPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search users..."
-            className="h-10 w-full rounded-xl border border-border bg-surface pl-10 pr-4 text-sm text-foreground outline-none focus:ring-2 focus:ring-violet-bright/50 placeholder:text-muted-foreground"
+            className="h-10 w-full rounded-xl border border-border bg-surface pl-10 pr-12 text-sm text-foreground outline-none focus:ring-2 focus:ring-violet-bright/50 placeholder:text-muted-foreground"
           />
+          {search && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-muted-foreground">
+              {filteredProfiles.length} result{filteredProfiles.length !== 1 ? "s" : ""}
+            </span>
+          )}
         </div>
         <div className="flex gap-1 rounded-xl bg-surface p-1">
           {(["leaderboard", "following", "feed"] as const).map(t => (
@@ -353,10 +367,18 @@ function SocialPage() {
               </button>
             </div>
           ))}
-          {leaderboard.length === 0 && (
+          {loadingProfiles && leaderboard.length === 0 && (
+            <div className="py-16 text-center">
+              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-violet-bright/30 border-t-violet-bright mb-3" />
+              <p className="text-sm text-muted-foreground">Loading users...</p>
+            </div>
+          )}
+          {!loadingProfiles && leaderboard.length === 0 && (
             <div className="py-16 text-center">
               <Users className="mx-auto h-10 w-10 text-muted-foreground/40 mb-3" />
-              <p className="text-sm text-muted-foreground">No other users yet. Invite friends to join!</p>
+              <p className="text-sm text-muted-foreground">
+                {search ? `No users found matching "${search}"` : "No other users yet. Invite friends to join!"}
+              </p>
             </div>
           )}
         </div>
