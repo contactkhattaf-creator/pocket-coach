@@ -261,8 +261,13 @@ function SocialPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search users..."
-            className="h-10 w-full rounded-xl border border-border bg-surface pl-10 pr-4 text-sm text-foreground outline-none focus:ring-2 focus:ring-violet-bright/50 placeholder:text-muted-foreground"
+            className="h-10 w-full rounded-xl border border-border bg-surface pl-10 pr-12 text-sm text-foreground outline-none focus:ring-2 focus:ring-violet-bright/50 placeholder:text-muted-foreground"
           />
+          {search && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-muted-foreground">
+              {filteredProfiles.length} result{filteredProfiles.length !== 1 ? "s" : ""}
+            </span>
+          )}
         </div>
         <div className="flex gap-1 rounded-xl bg-surface p-1">
           {(["leaderboard", "following", "feed"] as const).map(t => (
