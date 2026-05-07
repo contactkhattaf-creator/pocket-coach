@@ -99,19 +99,27 @@ function SocialPage() {
   }
 
   const loadData = useCallback(async () => {
-    if (!user) return;
-    const [profRes, followRes, actRes] = await Promise.all([
-      supabase.from("profiles").select("id, full_name, avatar_url, fds_score, badges, bio, financial_profile_type").order("fds_score", { ascending: false }).limit(50),
-      supabase.from("user_follows").select("follower_id, following_id"),
-      supabase.from("activity_feed").select("*").order("created_at", { ascending: false }).limit(50),
-    ]);
-    console.log("Social Hub loadData:", { profData: profRes.data?.length, profError: profRes.error, followError: followRes.error, actError: actRes.error, userId: user?.id });
-    if (profRes.error) { console.error("Profiles query error:", profRes.error); toast.error("Failed to load profiles"); }
-    if (followRes.error) { console.error("Follows query error:", followRes.error); }
-    if (actRes.error) { console.error("Activity query error:", actRes.error); }
-    if (profRes.data) setProfiles(profRes.data.map(p => ({ ...p, badges: (p.badges as string[]) || [], fds_score: p.fds_score || 0 })) as UserProfile[]);
-    if (followRes.data) setFollows(followRes.data as FollowRecord[]);
-    if (actRes.data) setActivities(actRes.data as ActivityItem[]);
+    if (!user) { console.warn("Social Hub: no user, skipping loadData"); return; }
+    setLoadingProfiles(true);
+    try {
+      const [profRes, followRes, actRes] = await Promise.all([
+        supabase.from("profiles").select("id, full_name, avatar_url, fds_score, badges, bio, financial_profile_type").order("fds_score", { ascending: false }).limit(50),
+        supabase.from("user_follows").select("follower_id, following_id"),
+        supabase.from("activity_feed").select("*").order("created_at", { ascending: false }).limit(50),
+      ]);
+      console.log("Social Hub loadData:", { profCount: profRes.data?.length, profError: profRes.error, userId: user?.id });
+      if (profRes.error) { console.error("Profiles query error:", profRes.error); toast.error("Failed to load profiles: " + profRes.error.message); }
+      if (followRes.error) { console.error("Follows query error:", followRes.error); }
+      if (actRes.error) { console.error("Activity query error:", actRes.error); }
+      if (profRes.data) setProfiles(profRes.data.map(p => ({ ...p, badges: (p.badges as string[]) || [], fds_score: p.fds_score || 0 })) as UserProfile[]);
+      if (followRes.data) setFollows(followRes.data as FollowRecord[]);
+      if (actRes.data) setActivities(actRes.data as ActivityItem[]);
+    } catch (err) {
+      console.error("Social Hub loadData crash:", err);
+      toast.error("Failed to load social data");
+    } finally {
+      setLoadingProfiles(false);
+    }
   }, [user]);
 
   useEffect(() => { loadData(); }, [loadData]);
