@@ -367,10 +367,18 @@ function SocialPage() {
               </button>
             </div>
           ))}
-          {leaderboard.length === 0 && (
+          {loadingProfiles && leaderboard.length === 0 && (
+            <div className="py-16 text-center">
+              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-violet-bright/30 border-t-violet-bright mb-3" />
+              <p className="text-sm text-muted-foreground">Loading users...</p>
+            </div>
+          )}
+          {!loadingProfiles && leaderboard.length === 0 && (
             <div className="py-16 text-center">
               <Users className="mx-auto h-10 w-10 text-muted-foreground/40 mb-3" />
-              <p className="text-sm text-muted-foreground">No other users yet. Invite friends to join!</p>
+              <p className="text-sm text-muted-foreground">
+                {search ? `No users found matching "${search}"` : "No other users yet. Invite friends to join!"}
+              </p>
             </div>
           )}
         </div>
