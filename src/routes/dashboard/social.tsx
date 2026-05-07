@@ -104,6 +104,10 @@ function SocialPage() {
       supabase.from("user_follows").select("follower_id, following_id"),
       supabase.from("activity_feed").select("*").order("created_at", { ascending: false }).limit(50),
     ]);
+    console.log("Social Hub loadData:", { profData: profRes.data?.length, profError: profRes.error, followError: followRes.error, actError: actRes.error, userId: user?.id });
+    if (profRes.error) { console.error("Profiles query error:", profRes.error); toast.error("Failed to load profiles"); }
+    if (followRes.error) { console.error("Follows query error:", followRes.error); }
+    if (actRes.error) { console.error("Activity query error:", actRes.error); }
     if (profRes.data) setProfiles(profRes.data.map(p => ({ ...p, badges: (p.badges as string[]) || [], fds_score: p.fds_score || 0 })) as UserProfile[]);
     if (followRes.data) setFollows(followRes.data as FollowRecord[]);
     if (actRes.data) setActivities(actRes.data as ActivityItem[]);
