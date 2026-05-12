@@ -65,11 +65,10 @@ function OnboardingPage() {
     setSaving(true);
     const { data } = await supabase.auth.getUser();
     if (data.user) {
-      await supabase.from("profiles").upsert({
-        id: data.user.id,
+      await supabase.from("profiles").update({
         full_name: name || null,
         monthly_income: income ? parseFloat(income) : null,
-      });
+      }).eq("id", data.user.id);
     }
     navigate({ to: "/dashboard" });
   }
