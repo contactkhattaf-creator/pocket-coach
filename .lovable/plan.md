@@ -1,62 +1,85 @@
+## Vision
 
-## Plan: Social System + UI Improvements
+Transformer Moniq en une vraie app fintech mobile (style Revolut + Duolingo + Stripe). Tout est repensé mobile-first : sur desktop, l'app s'affiche dans une "frame" mobile centrée, sur mobile elle prend tout l'écran. Palette violet élégant, mode clair/sombre, animations fluides, gestes natifs.
 
-### 1. Database: Social Tables
-Create migration for:
-- **user_follows** — follower/following relationships (follower_id, following_id, created_at) with RLS
-- **user_likes** — likes on profiles/content (user_id, target_user_id, created_at) with RLS
-- **activity_feed** — feed entries (user_id, action_type, target_user_id, metadata, created_at) with RLS
+---
 
-Profiles table already has badges, fds_score, avatar_url, full_name, bio — sufficient for social profiles.
+## Phase 1 — Shell mobile & navigation (fondations)
 
-### 2. Social Route: `/dashboard/social`
-New page with:
-- **Leaderboard** — top users by FDS score (public profiles)
-- **Follow/unfollow** buttons with smooth animations
-- **User cards** showing avatar, name, FDS score, badges, follower count
-- **Activity feed** showing followed users' achievements
-- **Search users** functionality
+- Créer `MobileShell` : header sticky + zone scroll + **bottom nav flottante** (5 onglets : Dashboard, Analytics, Community, Goals, Profile).
+- Wrapper desktop : sur écran large, l'app s'affiche dans un cadre 390×844 centré (style "device frame") avec fond ambient violet.
+- Refondre `DashboardSidebar` → devient `MobileShell` (sidebar masquée sous mobile, supprimée sur la frame mobile).
+- Routes restructurées : `/dashboard` (home), `/dashboard/analytics`, `/dashboard/social` (community), `/dashboard/goals`, `/dashboard/profile`. Les routes existantes (bills, budget, scanner, etc.) deviennent accessibles via le Dashboard ou un menu "More".
+- Composants réutilisables : `StickyHeader`, `BottomNav`, `FAB` (floating action button), `ScreenTransition` (animation fade/slide entre routes).
 
-### 3. Friends Updates Card on Dashboard
-Add a card in the dashboard right sidebar showing:
-- Recent activity from followed users (score changes, new badges)
-- Styled like the reference image with modern bento-grid cards
+## Phase 2 — Design system mobile premium
 
-### 4. Font Change
-Replace `Fraunces` with `Nunito Sans` (clean geometric, Avenir-like) for the display font across the app.
+- Mise à jour `src/styles.css` : tokens violet raffinés, gradients, glassmorphism (`.glass-card`), shadows douces, radius généreux.
+- Mode sombre + clair déjà en place — polir les deux.
+- Composants partagés : `MobileCard`, `StatCard`, `SwipeableCard`, `SkeletonLoader`, `PullToRefresh`, `BottomSheet`, `Toast` mobile.
+- Typographie : titres display, hiérarchie claire, cibles tactiles ≥ 44px.
+- Animations : fade-in, slide-up, scale, page transitions via Framer Motion (déjà dispo via `tw-animate-css` + keyframes custom).
 
-### 5. Landing Page Social Section
-Add a new section between Features and Showcase highlighting:
-- "Connect & Compete" — follow friends, leaderboard, badges
-- Bento-grid layout inspired by the uploaded reference image
-- Neon-green accent card + dark cards with icons
+## Phase 3 — Dashboard mobile
 
-### 6. Dark/Light Mode Toggle
-- Add light mode CSS variables in `:root` with `.dark` variant
-- Add toggle button in dashboard header and landing page
-- Store preference in localStorage
-- Light mode: white/gray backgrounds, dark text
-- Dark mode: current dark violet theme (default)
+- En-tête : avatar + salutation + notif bell.
+- **Carte balance** principale (gradient violet, animation counter).
+- Grille de stats rapides (XP, niveau, streak, badges).
+- **AI Insights** : carte avec recommandation personnalisée.
+- **Budget tracking** : barres de progression catégories.
+- **Recent activity** : timeline scrollable.
+- **Monthly goals** : mini-cards swipeables.
+- FAB pour scanner/ajouter une transaction.
 
-### Technical Details
+## Phase 4 — Analytics, Goals, Profile
 
-**Migration SQL:**
-```sql
-CREATE TABLE user_follows (follower_id uuid, following_id uuid, created_at timestamptz)
-CREATE TABLE activity_feed (user_id uuid, action text, metadata jsonb, created_at timestamptz)
-```
-With RLS policies for authenticated users.
+**Analytics** : charts mobile (Recharts), score de santé financière (gauge), catégories de dépenses (donut), comparaisons semaine/mois (cards), prédictions IA.
 
-**New files:**
-- `src/routes/dashboard/social.tsx` — social/leaderboard page
-- `src/components/dashboard/ThemeToggle.tsx` — dark/light toggle
+**Goals** : liste de goals avec progression animée, milestones interactives, célébration à l'unlock, création via bottom sheet.
 
-**Modified files:**
-- `src/styles.css` — light mode variables, font change
-- `src/routes/__root.tsx` — font link update
-- `src/routes/index.tsx` — add social section on landing
-- `src/routes/dashboard/index.tsx` — friends updates card
-- `src/components/dashboard/DashboardSidebar.tsx` — add social nav item + theme toggle
-- `src/components/landing/Header.tsx` — theme toggle on landing
+**Profile** : avatar large, stats (niveau, XP, badges), achievements grid, settings (notifications, privacy, **dark mode toggle**), accès aux sous-pages (export, subscriptions, bills).
 
-**RLS:** Users can follow/unfollow freely. Activity feed visible to followers. Profiles SELECT open to all authenticated users for leaderboard.
+## Phase 5 — Community / Social mobile
+
+Refonte complète de `social.tsx` :
+- **Feed** : cartes activité scroll vertical, réactions (like/clap), commentaires en bottom sheet.
+- **Discover** : grid de profils suggérés, recherche avec résultats live.
+- **Leaderboard** : podium animé top 3 + liste classée.
+- **Challenges** : cards de défis publics rejoignables.
+- **Profile cards** : modale plein écran avec follow/unfollow, stats, badges.
+- **Share achievement** : bottom sheet de partage.
+
+## Phase 6 — Onboarding & Gamification
+
+**Onboarding** (route `/onboarding`) : 4-5 slides swipeables (welcome, fonctionnalités, setup profil financier, sélection d'objectifs, fini), illustrations animées, indicateur de progression, skip.
+
+**Gamification** :
+- Animation XP bar (incrément animé).
+- **Badge unlock popup** plein écran (confetti + scale).
+- **Streak system** : flamme + compteur de jours.
+- **Daily challenges** : carte sur le dashboard.
+- **Level up** : célébration animée.
+- Tout déclenchable côté client pour démo (pas de backend supplémentaire dans cette phase).
+
+---
+
+## Section technique
+
+**Stack** : TanStack Start + React 19 + Tailwind v4. Framer Motion pour transitions (à installer). Recharts déjà dispo. Supabase déjà connecté pour social/follows/profiles.
+
+**Fichiers clés à créer** :
+- `src/components/mobile/MobileShell.tsx`, `BottomNav.tsx`, `StickyHeader.tsx`, `FAB.tsx`, `BottomSheet.tsx`, `SwipeableCard.tsx`, `PullToRefresh.tsx`, `SkeletonLoader.tsx`, `ScreenTransition.tsx`, `DeviceFrame.tsx`.
+- `src/components/mobile/dashboard/*` : `BalanceCard`, `AIInsightCard`, `BudgetTracker`, `ActivityTimeline`, `GoalsCarousel`, `GamificationStats`.
+- `src/components/mobile/gamification/*` : `XPBar`, `BadgeUnlockModal`, `StreakIndicator`, `LevelUpModal`, `AchievementCard`.
+- `src/components/mobile/social/*` : `FeedCard`, `ProfileCard`, `LeaderboardPodium`, `ChallengeCard`, `CommentsSheet`.
+- `src/routes/onboarding.tsx`, `src/routes/dashboard/analytics.tsx` (nouveau), refonte de `dashboard/index.tsx`, `dashboard/social.tsx`, `dashboard/goals.tsx`, `dashboard/profile.tsx`.
+
+**Pas de changement DB** dans ce chantier — on réutilise les tables `profiles`, `user_follows`, `user_xp` existantes. Les animations gamification sont déclenchées localement.
+
+**Routes existantes préservées** : bills, budget, scanner, transactions, subscriptions, etc. restent accessibles depuis le dashboard ou un écran "More".
+
+---
+
+## Livraison
+
+J'exécute les 6 phases en séquence dans cette même conversation, en validant chaque phase avec un build propre. À la fin tu auras une app qui ressemble à une vraie native sur mobile, et une frame élégante sur desktop.
