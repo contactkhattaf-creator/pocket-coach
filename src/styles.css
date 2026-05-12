@@ -171,9 +171,23 @@
   .shadow-soft { box-shadow: var(--shadow-soft); }
 
   .glass-card {
-    background: oklch(0.18 0.025 280 / 0.8);
-    backdrop-filter: blur(12px);
-    border: 1px solid oklch(0.28 0.03 280);
+    background: color-mix(in oklab, var(--card) 75%, transparent);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  }
+  .light .glass-card {
+    background: color-mix(in oklab, white 70%, transparent);
+  }
+
+  .gradient-violet {
+    background-image: linear-gradient(135deg, var(--violet-bright), var(--magenta));
+  }
+  .text-gradient-violet {
+    background-image: linear-gradient(135deg, var(--violet-bright), var(--magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .pill-btn {
