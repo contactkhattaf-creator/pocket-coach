@@ -64,11 +64,8 @@ function OnboardingPage() {
   async function finish() {
     setSaving(true);
     const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      await supabase.from("profiles").update({
-        full_name: name || null,
-        monthly_income: income ? parseFloat(income) : null,
-      }).eq("id", data.user.id);
+    if (data.user && name) {
+      await supabase.from("profiles").update({ full_name: name }).eq("id", data.user.id);
     }
     navigate({ to: "/dashboard" });
   }
