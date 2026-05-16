@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, createContext, useContext, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ResponsiveShell } from "@/components/mobile/ResponsiveShell";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { LoadingScreen } from "@/components/LoadingScreen";
 
 interface DashboardContextType {
@@ -45,9 +45,9 @@ function DashboardLayout() {
 
   return (
     <DashboardContext.Provider value={{ user, refreshData }}>
-      <ResponsiveShell>
+      <DashboardSidebar>
         <Outlet />
-      </ResponsiveShell>
+      </DashboardSidebar>
     </DashboardContext.Provider>
   );
 }
