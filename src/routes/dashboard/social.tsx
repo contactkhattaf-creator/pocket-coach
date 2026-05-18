@@ -156,7 +156,11 @@ function SocialPage() {
   );
 
   const followingProfiles = filteredProfiles.filter(p => isFollowing(p.id));
-  const leaderboard = [...filteredProfiles].sort((a, b) => b.fds_score - a.fds_score);
+  // Leaderboard includes current user so the ranking is always visible
+  const leaderboard = [...profiles]
+    .filter(p => search === "" || (p.full_name || "").toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => b.fds_score - a.fds_score);
+
 
   const feedActivities = activities.filter(a => myFollowing.includes(a.user_id));
 
@@ -316,18 +320,23 @@ function SocialPage() {
                     <div className="mt-2 flex items-center gap-1 text-[10px] text-muted-foreground">
                       <Users className="h-3 w-3" /> {getFollowerCount(p.id)}
                     </div>
-                    <button
-                      onClick={() => toggleFollow(p.id)}
-                      className={`mt-3 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold transition-all duration-300 ${
-                        animatingFollow === p.id ? "scale-110" : ""
-                      } ${
-                        isFollowing(p.id)
-                          ? "bg-surface text-muted-foreground hover:bg-destructive/15 hover:text-destructive"
-                          : "bg-violet-bright text-white hover:bg-violet-bright/80"
-                      }`}
-                    >
-                      {isFollowing(p.id) ? <><UserMinus className="h-3 w-3" /> Unfollow</> : <><UserPlus className="h-3 w-3" /> Follow</>}
-                    </button>
+                    {p.id === user?.id ? (
+                      <span className="mt-3 rounded-full bg-violet-bright/20 px-4 py-1.5 text-[11px] font-semibold text-violet-bright">You</span>
+                    ) : (
+                      <button
+                        onClick={() => toggleFollow(p.id)}
+                        className={`mt-3 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold transition-all duration-300 ${
+                          animatingFollow === p.id ? "scale-110" : ""
+                        } ${
+                          isFollowing(p.id)
+                            ? "bg-surface text-muted-foreground hover:bg-destructive/15 hover:text-destructive"
+                            : "bg-violet-bright text-white hover:bg-violet-bright/80"
+                        }`}
+                      >
+                        {isFollowing(p.id) ? <><UserMinus className="h-3 w-3" /> Unfollow</> : <><UserPlus className="h-3 w-3" /> Follow</>}
+                      </button>
+                    )}
+
                   </div>
                 );
               })}
@@ -355,18 +364,23 @@ function SocialPage() {
                   {p.badges.length > 0 && <span className="flex items-center gap-1"><Award className="h-3 w-3" />{p.badges.length}</span>}
                 </div>
               </div>
-              <button
-                onClick={() => toggleFollow(p.id)}
-                className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all duration-300 ${
-                  animatingFollow === p.id ? "scale-110" : ""
-                } ${
-                  isFollowing(p.id)
-                    ? "bg-surface text-muted-foreground hover:bg-destructive/15 hover:text-destructive"
-                    : "bg-violet-bright text-white hover:bg-violet-bright/80"
-                }`}
-              >
-                {isFollowing(p.id) ? <><UserMinus className="h-3.5 w-3.5" /> Unfollow</> : <><UserPlus className="h-3.5 w-3.5" /> Follow</>}
-              </button>
+              {p.id === user?.id ? (
+                <span className="rounded-full bg-violet-bright/20 px-4 py-2 text-xs font-semibold text-violet-bright">You</span>
+              ) : (
+                <button
+                  onClick={() => toggleFollow(p.id)}
+                  className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all duration-300 ${
+                    animatingFollow === p.id ? "scale-110" : ""
+                  } ${
+                    isFollowing(p.id)
+                      ? "bg-surface text-muted-foreground hover:bg-destructive/15 hover:text-destructive"
+                      : "bg-violet-bright text-white hover:bg-violet-bright/80"
+                  }`}
+                >
+                  {isFollowing(p.id) ? <><UserMinus className="h-3.5 w-3.5" /> Unfollow</> : <><UserPlus className="h-3.5 w-3.5" /> Follow</>}
+                </button>
+              )}
+
             </div>
             );
           })}

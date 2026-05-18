@@ -1,47 +1,57 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { useDashboard } from "@/routes/dashboard";
 import { supabase } from "@/integrations/supabase/client";
+import { scanReceipt } from "@/server/ai.functions";
 import { ScanLine, Upload, Camera, X, Check, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/scanner")({
   component: ScannerPage,
 });
 
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 function ScannerPage() {
   const { user } = useDashboard();
+  const scanFn = useServerFn(scanReceipt);
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<{ description: string; amount: string; date: string; category: string } | null>(null);
   const [saved, setSaved] = useState(false);
 
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     setPreview(URL.createObjectURL(file));
     setResult(null);
     setSaved(false);
-    simulateScan();
-  }
-
-  function simulateScan() {
     setScanning(true);
-    setTimeout(() => {
+    try {
+      const base64 = await fileToBase64(file);
+      const extracted = await scanFn({ data: { imageBase64: base64 } });
+      setResult(extracted);
+    } catch (err) {
+      console.error("Scan failed", err);
+      toast.error("Failed to scan receipt. Please try again.");
+    } finally {
       setScanning(false);
-      setResult({
-        description: "Marjane Supermarket",
-        amount: "347.50",
-        date: new Date().toISOString().split("T")[0],
-        category: "Shopping",
-      });
-    }, 2000);
+    }
   }
 
   async function saveTransaction() {
     if (!user || !result) return;
     const { data: cats } = await supabase.from("categories").select("id, name").eq("name", result.category).limit(1);
-    await supabase.from("transactions").insert({
+    const { error } = await supabase.from("transactions").insert({
       user_id: user.id,
       description: result.description,
       amount: parseFloat(result.amount),
@@ -49,7 +59,9 @@ function ScannerPage() {
       type: "expense",
       category_id: cats?.[0]?.id || null,
     });
+    if (error) { toast.error(error.message); return; }
     setSaved(true);
+    toast.success("Transaction saved");
   }
 
   function reset() {
