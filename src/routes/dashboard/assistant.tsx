@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
-import { useDashboard } from "@/routes/dashboard";
-import { Send, Mic, X } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { chatAssistant } from "@/server/ai.functions";
+import { Send } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/assistant")({
   component: AssistantPage,
@@ -13,23 +15,15 @@ interface Message {
 }
 
 const PROMPTS = [
-  "Am I on track this month?",
-  "Where am I overspending?",
-  "Optimize my subscriptions",
-  "How can I save more?",
-  "Analyze my spending habits",
+  "Suis-je sur la bonne voie ce mois-ci ?",
+  "Où est-ce que je dépense trop ?",
+  "Optimise mes abonnements",
+  "Comment économiser plus ?",
+  "Analyse mes habitudes de dépense",
 ];
 
-const RESPONSES: Record<string, string> = {
-  "Am I on track this month?": "Based on your current spending patterns, you're tracking well this month. Your expenses are within 85% of your budget limits. Keep it up! Consider reducing dining out by 10% to stay under your food budget.",
-  "Where am I overspending?": "Looking at your transactions, the top areas where you're spending more than average are: 1) Food & Dining (23% above budget), 2) Entertainment (15% above). I recommend setting stricter alerts for these categories.",
-  "Optimize my subscriptions": "You have several active subscriptions. I noticed some overlap — you're paying for both streaming services. Consider keeping one and saving ~80 MAD/month. Also, your gym membership hasn't been used in 3 weeks.",
-  "How can I save more?": "Here are 3 quick wins: 1) Switch to a cheaper phone plan (save ~50 MAD/month), 2) Use the 50/30/20 rule for your salary, 3) Set up auto-transfer of 10% of income to your savings goal on payday.",
-  "Analyze my spending habits": "Your spending profile shows you're a 'Weekend Spender' — 62% of discretionary spending happens Friday-Sunday. You tend to make impulsive purchases in the evening. Consider setting a weekend spending cap.",
-};
-
 function AssistantPage() {
-  const { user } = useDashboard();
+  const chatFn = useServerFn(chatAssistant);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -39,35 +33,23 @@ function AssistantPage() {
     chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, typing]);
 
-  function sendMessage(text: string) {
-    if (!text.trim()) return;
+  async function sendMessage(text: string) {
+    if (!text.trim() || typing) return;
     const userMsg: Message = { role: "user", content: text.trim() };
-    setMessages((prev) => [...prev, userMsg]);
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
     setInput("");
     setTyping(true);
-
-    // Simulate AI response with typewriter
-    const response = RESPONSES[text.trim()] || `I've analyzed your financial data. ${text.includes("save") ? "Based on your income and expenses, I recommend automating a 15% savings transfer each month." : "Your financial health score is improving. Keep maintaining your streak and tracking all transactions for the most accurate insights."}`;
-    
-    setTimeout(() => {
+    try {
+      const history = messages.map(m => ({ role: m.role, content: m.content }));
+      const { reply } = await chatFn({ data: { message: text.trim(), history } });
+      setMessages([...newMessages, { role: "assistant", content: reply }]);
+    } catch (err) {
+      console.error("Chat failed", err);
+      toast.error("L'assistant n'a pas pu répondre. Réessayez.");
+    } finally {
       setTyping(false);
-      typewriterEffect(response);
-    }, 1000);
-  }
-
-  function typewriterEffect(text: string) {
-    let i = 0;
-    const id = setInterval(() => {
-      setMessages((prev) => {
-        const last = prev[prev.length - 1];
-        if (last?.role === "assistant") {
-          return [...prev.slice(0, -1), { role: "assistant", content: text.slice(0, i + 1) }];
-        }
-        return [...prev, { role: "assistant", content: text.slice(0, i + 1) }];
-      });
-      i++;
-      if (i >= text.length) clearInterval(id);
-    }, 15);
+    }
   }
 
   return (
