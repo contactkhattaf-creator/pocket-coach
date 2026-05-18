@@ -156,7 +156,11 @@ function SocialPage() {
   );
 
   const followingProfiles = filteredProfiles.filter(p => isFollowing(p.id));
-  const leaderboard = [...filteredProfiles].sort((a, b) => b.fds_score - a.fds_score);
+  // Leaderboard includes current user so the ranking is always visible
+  const leaderboard = [...profiles]
+    .filter(p => search === "" || (p.full_name || "").toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => b.fds_score - a.fds_score);
+
 
   const feedActivities = activities.filter(a => myFollowing.includes(a.user_id));
 
