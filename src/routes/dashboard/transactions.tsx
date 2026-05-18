@@ -191,16 +191,22 @@ function TransactionsPage() {
                 <input type="number" step="0.01" required value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-violet-bright" placeholder="0.00" />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium text-muted-foreground">Category</label>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">Description</label>
+                <input type="text" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-violet-bright" placeholder="Coffee at Café" />
+              </div>
+              <div>
+                <div className="mb-1 flex items-center justify-between">
+                  <label className="block text-xs font-medium text-muted-foreground">Category</label>
+                  <button type="button" onClick={suggestCategoryWithAI} disabled={aiSuggesting} className="inline-flex items-center gap-1 rounded-full bg-violet-bright/15 px-2.5 py-1 text-[11px] font-semibold text-violet-bright transition hover:bg-violet-bright/25 disabled:opacity-50">
+                    <Sparkles className="h-3 w-3" /> {aiSuggesting ? "..." : "Suggérer avec IA"}
+                  </button>
+                </div>
                 <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none">
                   <option value="">Select category</option>
                   {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium text-muted-foreground">Description</label>
-                <input type="text" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-violet-bright" placeholder="Coffee at Café" />
-              </div>
+
               <div>
                 <label className="mb-1 block text-xs font-medium text-muted-foreground">Date</label>
                 <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-violet-bright" />
