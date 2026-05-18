@@ -22,6 +22,32 @@ function TransactionsPage() {
   const [editingTx, setEditingTx] = useState<any>(null);
   const [form, setForm] = useState({ amount: "", type: "expense", category_id: "", description: "", date: new Date().toISOString().split("T")[0] });
   const [saving, setSaving] = useState(false);
+  const [aiSuggesting, setAiSuggesting] = useState(false);
+  const autoCategorizeFn = useServerFn(autoCategorize);
+
+  async function suggestCategoryWithAI() {
+    if (!form.description.trim()) {
+      toast.error("Entrez d'abord une description");
+      return;
+    }
+    setAiSuggesting(true);
+    try {
+      const { categoryId, category } = await autoCategorizeFn({
+        data: { description: form.description, amount: parseFloat(form.amount) || 0 },
+      });
+      if (categoryId) {
+        setForm((f) => ({ ...f, category_id: categoryId }));
+        toast.success(`Catégorie suggérée: ${category}`);
+      } else {
+        toast.info(`Catégorie "${category}" non trouvée — créez-la d'abord`);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Échec de la suggestion IA");
+    } finally {
+      setAiSuggesting(false);
+    }
+  }
 
   const loadData = useCallback(async () => {
     if (!user) return;
