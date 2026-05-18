@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useDashboard } from "@/routes/dashboard";
-import { Plus, Search, Pencil, Trash2, X } from "lucide-react";
+import { autoCategorize } from "@/server/ai.functions";
+import { Plus, Search, Pencil, Trash2, X, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/transactions")({
   component: TransactionsPage,
